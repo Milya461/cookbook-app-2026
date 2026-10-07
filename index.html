@@ -318,7 +318,56 @@ function showCategory(category) {
 }
 
 function showRecipe(category, index) {
-  history.push("category");
+  history.push({
+    page: "category",
+    category: category
+  });
+
+  const recipe = recipes[category][index];
+  const name = recipe[0];
+
+  const isSelected = selected.includes(name);
+
+  document.getElementById("app").innerHTML = `
+    <section class="screen">
+      <div class="header">
+        <button class="back" onclick="goBack()">Назад</button>
+      </div>
+
+      <article class="recipe">
+        <div class="recipe-photo">
+          Фото блюда
+        </div>
+
+        <div class="recipe-content">
+          <h1>${name}</h1>
+
+          <p>${recipe[1]}</p>
+
+          <h2>Ингредиенты</h2>
+          <ul>
+            <li>Основные продукты</li>
+            <li>Овощи и зелень</li>
+            <li>Специи по вкусу</li>
+          </ul>
+
+          <h2>Приготовление</h2>
+          <ol>
+            <li>Подготовить необходимые ингредиенты.</li>
+            <li>Приготовить основные продукты.</li>
+            <li>Соединить ингредиенты.</li>
+            <li>Подать готовое блюдо.</li>
+          </ol>
+
+          <button class="button favorite"
+            onclick="toggleSelected('${escapeQuotes(name)}')">
+            ${isSelected ? "Убрать из моего выбора" : "Добавить в мой выбор"}
+          </button>
+        </div>
+      </article>
+    </section>
+  `;
+}
 
   const recipe = recipes[category][index];
   const name = recipe[0];
