@@ -318,7 +318,7 @@ function showCategory(category) {
 }
 
 function showRecipe(category, index) {
-  history.push("category");
+  history.push({ type: "category", category });
 
   const recipe = recipes[category][index];
   const name = recipe[0];
@@ -450,8 +450,8 @@ function goBack() {
 
   if (previous === "menu") {
     showMenu();
-  } else if (previous === "category") {
-    showMenu();
+  } else if (previous && previous.type === "category") {
+    showCategory(previous.category);
   } else {
     showMenu();
   }
