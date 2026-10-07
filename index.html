@@ -574,7 +574,78 @@ function removeSelected(name) {
 
 /* ОТПРАВИТЬ В TELEGRAM */
 
-function sendSelection() {
+async function sendSelection() {
+  if (selected.length === 0) {
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.showPopup({
+        title: "Мой выбор",
+        message: "Сначала выберите хотя бы одно блюдо.",
+        buttons: [{ type: "ok" }]
+      });
+    } else {
+      alert("Сначала выберите хотя бы одно блюдо.");
+    }
+    return;
+  }
+
+  const user =
+    window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+
+  const name = [
+    user.first_name,
+    user.last_name
+  ]
+    .filter(Boolean)
+    .join(" ") || "Без имени";
+
+  const username = user.username || "";
+
+  try {
+    const response = await fetch(
+      "https://cookbook-notifications.wbrm7bt4hn.workers.dev",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          username: username,
+          dishes: selected
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      throw new Error(result.error || "Ошибка отправки");
+    }
+
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.showPopup({
+        title: "Готово",
+        message: "Ваш выбор отправлен.",
+        buttons: [{ type: "ok" }]
+      });
+    } else {
+      alert("Ваш выбор отправлен.");
+    }
+
+  } catch (error) {
+    console.error(error);
+
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.showPopup({
+        title: "Ошибка",
+        message: "Не удалось отправить выбор. Попробуйте ещё раз.",
+        buttons: [{ type: "ok" }]
+      });
+    } else {
+      alert("Не удалось отправить выбор. Попробуйте ещё раз.");
+    }
+  }
+}
 
   const text =
     "Мой выбор:\n\n" +
