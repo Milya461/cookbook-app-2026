@@ -269,6 +269,118 @@ const recipes = {
 };
 
 
+/* ТОЧНОЕ СООТВЕТСТВИЕ РЕЦЕПТОВ И ФОТО */
+
+const recipeImages = {
+
+  "Летний салат":
+    "летний салат.jpeg",
+
+  "Салат «Шакароб»":
+    "салат \"шакароб\".jpeg",
+
+  "Салат «Лёгкий»":
+    "салат \"легкий\".jpeg",
+
+  "Теплый салат":
+    "теплый салат.jpeg",
+
+  "Оливье":
+    "оливье.jpeg",
+
+  "Крабовый салат":
+    "крабовый салат.jpeg",
+
+  "Винегрет":
+    "винегрет.jpeg",
+
+  "Цезарь":
+    "цезарь.jpeg",
+
+
+  "Болоньезе":
+    "болоньезе.jpeg",
+
+  "Макароны по-флотски":
+    "макароны по-флотски.jpeg",
+
+  "Макароны с фаршем":
+    "макароны с фаршем.jpeg",
+
+  "Макароны с курицей и овощами":
+    "макароны с курицей и овощами.jpeg",
+
+  "Лазанья":
+    "лазанья.jpeg",
+
+
+  "Курица + картофель + брокколи":
+    "курица + картофель + овощи.jpeg",
+
+  "Курица с овощами":
+    "курица с овощами.jpeg",
+
+  "Курица + картофель + брюссельская капуста":
+    "курица + картофель + брюссельская капуста.jpeg",
+
+  "Курица в сычуаньском соусе + рис":
+    "курица в сычуанском соусе с рисом.jpeg",
+
+
+  "Говядина с картошкой":
+    "Говядина с картошкой.jpeg",
+
+  "Стейк + картофель + брокколи":
+    "стейк + картофель + брокколи.jpeg",
+
+  "Говядина с овощами и рисом":
+    "говядина с овощами и рисом.jpeg",
+
+  "Мясо по-французски":
+    "Мясо по-французски.jpeg",
+
+  "Бриззоль с фаршем":
+    "бриззоль с фаршем.jpeg",
+
+
+  "Рассольник":
+    "Рассольник.jpeg",
+
+  "Борщ":
+    "борщ.jpeg",
+
+  "Перловый суп с говядиной":
+    "перловый суп с говядиной.webp",
+
+  "Солянка":
+    "солянка.jpeg",
+
+  "Лагман":
+    "лагман.jpeg",
+
+
+  "Рис с тушёнкой и фасолью":
+    "рис с тушенкой и фасолью.jpeg",
+
+  "Котлеты + гречка":
+    "котлеты + гречка.jpeg",
+
+  "Рис с фаршем и овощами":
+    "рис с фаршем и овощами.jpeg",
+
+  "Плов":
+    "плов.jpeg",
+
+
+  "Хачапури":
+    "хачапури.jpeg",
+
+  "Блины":
+    "блины.jpeg"
+
+};
+
+
 let selected = JSON.parse(
   localStorage.getItem("selectedRecipes") || "[]"
 );
@@ -342,7 +454,6 @@ function showMenu() {
 
       </div>
 
-
       <div class="menu">
 
         ${Object.keys(recipes).map(category => `
@@ -354,7 +465,6 @@ function showMenu() {
           </button>
 
         `).join("")}
-
 
         <button onclick="openSelected()">
 
@@ -407,7 +517,6 @@ function showCategory(category) {
         </button>
 
       </div>
-
 
       <div class="recipe-list">
 
@@ -468,31 +577,18 @@ function showRecipe(category, index) {
     selected.includes(name);
 
 
-  /*
-    ФОТО:
-    Название рецепта в приложении может быть
-    с заглавной буквы.
-
-    Файлы фотографий в GitHub названы
-    маленькими буквами.
-
-    Поэтому автоматически переводим
-    название файла в нижний регистр.
-  */
-
-  const imageFileName =
-    name.toLowerCase() + ".jpeg";
+  const fileName =
+    recipeImages[name];
 
 
   const imageUrl =
     "https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/" +
-    encodeURIComponent(imageFileName);
+    encodeURIComponent(fileName);
 
 
   document.getElementById("app").innerHTML = `
 
     <section class="screen">
-
 
       <div class="header">
 
@@ -505,38 +601,30 @@ function showRecipe(category, index) {
 
       </div>
 
-
       <article class="recipe">
-
 
         <div class="recipe-photo">
 
           <img
             src="${imageUrl}"
             alt="${name}"
-            onerror="this.style.display='none'"
           >
 
         </div>
 
-
         <div class="recipe-content">
-
 
           <h1>
             ${name}
           </h1>
 
-
           <p>
             ${recipe[1]}
           </p>
 
-
           <h2>
             Ингредиенты
           </h2>
-
 
           <ul>
 
@@ -554,11 +642,9 @@ function showRecipe(category, index) {
 
           </ul>
 
-
           <h2>
             Приготовление
           </h2>
-
 
           <ol>
 
@@ -580,7 +666,6 @@ function showRecipe(category, index) {
 
           </ol>
 
-
           <button
             class="button favorite"
             onclick="toggleSelected(
@@ -595,7 +680,6 @@ function showRecipe(category, index) {
             }
 
           </button>
-
 
         </div>
 
@@ -655,7 +739,6 @@ function showSelected() {
 
       <section class="screen">
 
-
         <div class="header">
 
           <h1>
@@ -671,13 +754,11 @@ function showSelected() {
 
         </div>
 
-
         <div class="empty">
 
           <p>
             Пока ничего не выбрано
           </p>
-
 
           <button
             class="button"
@@ -687,7 +768,6 @@ function showSelected() {
           </button>
 
         </div>
-
 
       </section>
 
@@ -702,13 +782,11 @@ function showSelected() {
 
     <section class="screen">
 
-
       <div class="header">
 
         <h1>
           Мой выбор
         </h1>
-
 
         <button
           class="back"
@@ -719,9 +797,7 @@ function showSelected() {
 
       </div>
 
-
       <div class="selected-list">
-
 
         ${selected.map(name => `
 
@@ -730,7 +806,6 @@ function showSelected() {
             <span>
               ${name}
             </span>
-
 
             <button
               class="remove"
@@ -745,9 +820,7 @@ function showSelected() {
 
         `).join("")}
 
-
       </div>
-
 
       <button
         class="button"
@@ -756,7 +829,6 @@ function showSelected() {
       >
         Отправить мой выбор
       </button>
-
 
     </section>
 
