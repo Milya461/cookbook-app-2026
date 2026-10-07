@@ -468,10 +468,25 @@ function showRecipe(category, index) {
     selected.includes(name);
 
 
+  /*
+    ФОТО:
+    Название рецепта в приложении может быть
+    с заглавной буквы.
+
+    Файлы фотографий в GitHub названы
+    маленькими буквами.
+
+    Поэтому автоматически переводим
+    название файла в нижний регистр.
+  */
+
+  const imageFileName =
+    name.toLowerCase() + ".jpeg";
+
+
   const imageUrl =
     "https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/" +
-    encodeURIComponent(name) +
-    ".jpeg";
+    encodeURIComponent(imageFileName);
 
 
   document.getElementById("app").innerHTML = `
