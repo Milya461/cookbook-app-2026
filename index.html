@@ -1,200 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Моя кулинарная книга</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
 }
 
-body {
-  margin: 0;
-  background: #f7f3ed;
-  color: #2d2926;
-  font-family: Georgia, "Times New Roman", serif;
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#f4eee5
 }
 
-button {
-  font: inherit;
+body{
+  font-family:Arial,sans-serif
 }
 
-#app {
-  width: 100%;
-  min-height: 100vh;
+#app{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start
 }
 
-.screen {
-  min-height: 100vh;
-  padding: 24px 20px 40px;
+.book{
+  position:relative;
+  width:min(100vw,393px);
+  height:min(100vh,852px);
+  aspect-ratio:393/852;
+  overflow:hidden;
+  background:#f4eee5
 }
 
-.cover {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+.page{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:fill;
+  user-select:none;
+  -webkit-user-drag:none
 }
 
-.cover h1 {
-  font-size: 42px;
-  line-height: 1.05;
-  margin: 0 0 14px;
+.hit{
+  position:absolute;
+  border:0;
+  background:transparent;
+  padding:0;
+  margin:0;
+  z-index:5;
+  cursor:pointer
 }
 
-.cover p {
-  font-size: 18px;
-  margin: 0 0 35px;
+.hit:active{
+  background:rgba(0,0,0,.04)
 }
 
-.button {
-  border: 0;
-  border-radius: 30px;
-  padding: 15px 28px;
-  background: #2d2926;
-  color: white;
-  cursor: pointer;
+.input-hit{
+  position:absolute;
+  z-index:6;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#777;
+  font:14px Arial;
+  padding:0 16px
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-}
-
-.header h1 {
-  font-size: 30px;
-  margin: 0;
-}
-
-.back {
-  border: 0;
-  background: transparent;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 8px 0;
-}
-
-.menu {
-  display: grid;
-  gap: 14px;
-}
-
-.menu button,
-.recipe-card {
-  width: 100%;
-  border: 0;
-  border-radius: 18px;
-  background: white;
-  padding: 20px;
-  text-align: left;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
-  cursor: pointer;
-}
-
-.menu button {
-  font-size: 20px;
-}
-
-.recipe-list {
-  display: grid;
-  gap: 14px;
-}
-
-.recipe-card h3 {
-  margin: 0 0 7px;
-  font-size: 20px;
-}
-
-.recipe-card p {
-  margin: 0;
-  color: #777;
-  font-size: 14px;
-}
-
-.recipe {
-  background: white;
-  border-radius: 22px;
-  overflow: hidden;
-}
-
-.recipe-photo {
-  height: 220px;
-  background: #ddd2c5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #75695e;
-  font-size: 16px;
-}
-  .recipe-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.recipe-content {
-  padding: 24px;
-}
-
-.recipe-content h1 {
-  margin: 0 0 18px;
-  font-size: 30px;
-}
-
-.recipe-content h2 {
-  font-size: 20px;
-  margin: 25px 0 10px;
-}
-
-.recipe-content ul,
-.recipe-content ol {
-  padding-left: 22px;
-  line-height: 1.7;
-}
-
-.favorite {
-  width: 100%;
-  margin-top: 25px;
-}
-
-.empty {
-  text-align: center;
-  padding: 80px 20px;
-}
-
-.empty p {
-  color: #777;
-  margin-bottom: 25px;
-}
-
-.selected-list {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 25px;
-}
-
-.selected-item {
-  background: white;
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-}
-
-.remove {
-  border: 0;
-  background: transparent;
-  color: #a33;
-  cursor: pointer;
+.input-hit::placeholder{
+  color:#999
 }
 </style>
 </head>
@@ -204,319 +87,1128 @@ button {
 <div id="app"></div>
 
 <script>
-const recipeImages = {
-  "Летний салат": "03 - Салаты  - 01 - Летний салат.png",
-  "Салат «Шакароб»": "04 - Салаты  - 02 - Салат _Шакароб_.png",
-  "Салат «Лёгкий»": "05 - Салаты  - 03 - Салат _Лёгкий_.png",
-  "Теплый салат": "06 - Салаты  - 04 - Теплый салат.png",
-  "Оливье": "07 - Салаты  - 05 - Оливье.png",
-  "Крабовый салат": "08 - Салаты  - 06 - Крабовый салат.png",
-  "Винегрет": "09 - Салаты  - 07 - Винегрет.png",
-  "Цезарь": "10 - Салаты  - 08 - Цезарь.png",
 
-  "Болоньезе": "12- Паста и макароны - 01 - Болоньезе.png",
-  "Макароны по-флотски": "13- Паста и макароны - 02 - МАКАРОНЫ ПО-ФЛОТСКИ.png",
-  "Макароны с фаршем": "14- Паста и макароны - 03 - МАКАРОНЫ с фаршем.png",
-  "Макароны с курицей и овощами": "15- Паста и макароны - 04 - МАКАРОНЫ с курицей и овощами.png",
-  "Лазанья": "16 - Паста и макароны - 04 - Лазанья.png",
+const BASE="https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/";
 
-  "Курица + картофель + брокколи": "18 - Курица - 01 - КУРИЦА + КАРТОФЕЛЬ + БРОККОЛИ.png",
-  "Курица с овощами": "19 - Курица - 02 - КУРИЦА С ОВОЩАМИ.png",
-  "Курица + картофель + брюссельская капуста": "20 - Курица - 03 - КУРИЦА + КАРТОФЕЛЬ + БРЮССЕЛЬСКАЯ КАПУСТА.png",
-  "Курица в сычуаньском соусе + рис": "21 - Курица - 03 - КУРИЦА В СЫЧУАНЬСКОМ СОУСЕ + РИС.png",
+const P={
+  cover:"00 - Обложка.png",
+  menu:"01 - Главное меню.png",
 
-  "Говядина с картошкой": "23- Мясо - 01 - ГОВЯДИНА С КАРТОШКОЙ.png",
-  "Стейк + картофель + брокколи": "24 - Мясо - 02 - СТЕЙК + КАРТОФЕЛЬ + БРОККОЛИ.png",
-  "Говядина с овощами и рисом": "25 - Мясо - 03 - ГОВЯДИНА с овощами и рисом.png",
-  "Мясо по-французски": "26 - Мясо - 04 — МЯСО ПО-ФРАНЦУЗСКИ.png",
-  "Бриззоль с фаршем": "27 - Мясо - 05 — БРИЗЗОЛЬ С ФАРШЕМ.png",
+  Салаты:"02 - Салаты.png",
+  "Паста и макароны":"11 - Паста и макароны.png",
+  Курица:"17 - Курица.png",
+  Мясо:"22 - Мясо.png",
+  Супы:"28 - Супы.png",
+  "Быстро и сытно":"34 - Быстро и сытно.png",
+  Выпечка:"39 - выпечка.png",
 
-  "Рассольник": "29 - Супы - 01 — РАССОЛЬНИК.png",
-  "Борщ": "30 - Супы - 02 — БОРЩ.png",
-  "Перловый суп с говядиной": "31 - Супы - 03 — ПЕРЛОВЫЙ СУП С ГОВЯДИНОЙ.png",
-  "Солянка": "32 - Супы - 04 — СОЛЯНКА.png",
-  "Лагман": "33- Супы - 05 — ЛАГМАН.png",
-
-  "Рис с тушёнкой и фасолью": "35 - БЫСТРО И СЫТНО - 01 — Рис с тушенкой и фасолью.png",
-  "Котлеты + гречка": "36 - БЫСТРО И СЫТНО - 02 — КОТЛЕТЫ + ГРЕЧКА.png",
-  "Рис с фаршем и овощами": "37 - БЫСТРО И СЫТНО - 03 — РИС С ФАРШЕМ И ОВОЩАМИ.png",
-  "Плов": "38 - БЫСТРО И СЫТНО - 04 — ПЛОВ.png",
-
-  "Хачапури": "40 - выпечка - 01 - хачапури.png",
-  "Блины": "41 - выпечка - 02 - блины.png"
+  empty:"42 - Мой выбор - пусто.png",
+  selected:"42 - Мой выбор.png",
+  send:"44 - Отправка.png",
+  done:"45 - Готово.png"
 };
-  const recipes = {
-  "Салаты": [
-    ["Летний салат", "Свежий лёгкий салат"],
-    ["Салат «Шакароб»", "Помидоры, лук и свежая зелень"],
-    ["Салат «Лёгкий»", "Простой овощной салат"],
-    ["Теплый салат", "Тёплые овощи и мясо"],
-    ["Оливье", "Классический домашний салат"],
-    ["Крабовый салат", "Крабовые палочки и овощи"],
-    ["Винегрет", "Овощной салат со свёклой"],
-    ["Цезарь", "Курица, салат и соус"]
+
+
+const R={
+
+  "Летний салат":
+    "03 - Салаты  - 01 - Летний салат.png",
+
+  "Салат «Шакароб»":
+    "04 - Салаты  - 02 - Салат _Шакароб_.png",
+
+  "Салат «Лёгкий»":
+    "05 - Салаты  - 03 - Салат _Лёгкий_.png",
+
+  "Теплый салат":
+    "06 - Салаты  - 04 - Теплый салат.png",
+
+  "Оливье":
+    "07 - Салаты  - 05 - Оливье.png",
+
+  "Крабовый салат":
+    "08 - Салаты  - 06 - Крабовый салат.png",
+
+  "Винегрет":
+    "09 - Салаты  - 07 - Винегрет.png",
+
+  "Цезарь":
+    "10 - Салаты  - 08 - Цезарь.png",
+
+
+  "Болоньезе":
+    "12- Паста и макароны - 01 - Болоньезе.png",
+
+  "Макароны по-флотски":
+    "13- Паста и макароны - 02 - МАКАРОНЫ ПО-ФЛОТСКИ.png",
+
+  "Макароны с фаршем":
+    "14- Паста и макароны - 03 - МАКАРОНЫ с фаршем.png",
+
+  "Макароны с курицей и овощами":
+    "15- Паста и макароны - 04 - МАКАРОНЫ с курицей и овощами.png",
+
+  "Лазанья":
+    "16 - Паста и макароны - 04 - Лазанья.png",
+
+
+  "Курица + картофель + брокколи":
+    "18 - Курица - 01 - КУРИЦА + КАРТОФЕЛЬ + БРОККОЛИ.png",
+
+  "Курица с овощами":
+    "19 - Курица - 02 - КУРИЦА С ОВОЩАМИ.png",
+
+  "Курица + картофель + брюссельская капуста":
+    "20 - Курица - 03 - КУРИЦА + КАРТОФЕЛЬ + БРЮССЕЛЬСКАЯ КАПУСТА.png",
+
+  "Курица в сычуаньском соусе + рис":
+    "21 - Курица - 03 - КУРИЦА В СЫЧУАНЬСКОМ СОУСЕ + РИС.png",
+
+
+  "Говядина с картошкой":
+    "23- Мясо - 01 - ГОВЯДИНА С КАРТОШКОЙ.png",
+
+  "Стейк + картофель + брокколи":
+    "24 - Мясо - 02 - СТЕЙК + КАРТОФЕЛЬ + БРОККОЛИ.png",
+
+  "Говядина с овощами и рисом":
+    "25 - Мясо - 03 - ГОВЯДИНА с овощами и рисом.png",
+
+  "Мясо по-французски":
+    "26 - Мясо - 04 — МЯСО ПО-ФРАНЦУЗСКИ.png",
+
+  "Бриззоль с фаршем":
+    "27 - Мясо - 05 — БРИЗЗОЛЬ С ФАРШЕМ.png",
+
+
+  "Рассольник":
+    "29 - Супы - 01 — РАССОЛЬНИК.png",
+
+  "Борщ":
+    "30 - Супы - 02 — БОРЩ.png",
+
+  "Перловый суп с говядиной":
+    "31 - Супы - 03 — ПЕРЛОВЫЙ СУП С ГОВЯДИНОЙ.png",
+
+  "Солянка":
+    "32 - Супы - 04 — СОЛЯНКА.png",
+
+  "Лагман":
+    "33- Супы - 05 — ЛАГМАН.png",
+
+
+  "Рис с тушёнкой и фасолью":
+    "35 - БЫСТРО И СЫТНО - 01 — Рис с тушенкой и фасолью.png",
+
+  "Котлеты + гречка":
+    "36 - БЫСТРО И СЫТНО - 02 — КОТЛЕТЫ + ГРЕЧКА.png",
+
+  "Рис с фаршем и овощами":
+    "37 - БЫСТРО И СЫТНО - 03 — РИС С ФАРШЕМ И ОВОЩАМИ.png",
+
+  "Плов":
+    "38 - БЫСТРО И СЫТНО - 04 — ПЛОВ.png",
+
+
+  "Хачапури":
+    "40 - выпечка - 01 - хачапури.png",
+
+  "Блины":
+    "41 - выпечка - 02 - блины.png"
+};
+
+
+const C={
+
+  "Салаты":[
+    "Летний салат",
+    "Салат «Шакароб»",
+    "Салат «Лёгкий»",
+    "Теплый салат",
+    "Оливье",
+    "Крабовый салат",
+    "Винегрет",
+    "Цезарь"
   ],
 
-  "Паста и макароны": [
-    ["Болоньезе", "Макароны с мясным соусом"],
-    ["Макароны по-флотски", "Макароны с фаршем"],
-    ["Макароны с фаршем", "Домашние макароны с мясом"],
-    ["Макароны с курицей и овощами", "Курица, овощи и макароны"],
-    ["Лазанья", "Слои пасты с мясным соусом"]
+  "Паста и макароны":[
+    "Болоньезе",
+    "Макароны по-флотски",
+    "Макароны с фаршем",
+    "Макароны с курицей и овощами",
+    "Лазанья"
   ],
 
-  "Курица": [
-    ["Курица + картофель + брокколи", "Запечённая курица с овощами"],
-    ["Курица с овощами", "Курица с овощами"],
-    ["Курица + картофель + брюссельская капуста", "Курица и овощи"],
-    ["Курица в сычуаньском соусе + рис", "Острая курица с рисом"]
+  Курица:[
+    "Курица + картофель + брокколи",
+    "Курица с овощами",
+    "Курица + картофель + брюссельская капуста",
+    "Курица в сычуаньском соусе + рис"
   ],
 
-  "Мясо": [
-    ["Говядина с картошкой", "Говядина и картофель"],
-    ["Стейк + картофель + брокколи", "Стейк с гарниром"],
-    ["Говядина с овощами и рисом", "Говядина, овощи и рис"],
-    ["Мясо по-французски", "Мясо под сырной корочкой"],
-    ["Бриззоль с фаршем", "Домашнее мясное блюдо"]
+  Мясо:[
+    "Говядина с картошкой",
+    "Стейк + картофель + брокколи",
+    "Говядина с овощами и рисом",
+    "Мясо по-французски",
+    "Бриззоль с фаршем"
   ],
 
-  "Супы": [
-    ["Рассольник", "Домашний суп с солёными огурцами"],
-    ["Борщ", "Классический домашний борщ"],
-    ["Перловый суп с говядиной", "Сытный суп с перловкой"],
-    ["Солянка", "Наваристый мясной суп"],
-    ["Лагман", "Суп с мясом и лапшой"]
+  Супы:[
+    "Рассольник",
+    "Борщ",
+    "Перловый суп с говядиной",
+    "Солянка",
+    "Лагман"
   ],
 
-  "Быстро и сытно": [
-    ["Рис с тушёнкой и фасолью", "Быстрый сытный ужин"],
-    ["Котлеты + гречка", "Домашние котлеты с гарниром"],
-    ["Рис с фаршем и овощами", "Рис с мясом и овощами"],
-    ["Плов", "Домашний плов"]
+  "Быстро и сытно":[
+    "Рис с тушёнкой и фасолью",
+    "Котлеты + гречка",
+    "Рис с фаршем и овощами",
+    "Плов"
   ],
 
-  "Выпечка": [
-    ["Хачапури", "Домашняя выпечка с сыром"],
-    ["Блины", "Тонкие домашние блины"]
+  Выпечка:[
+    "Хачапури",
+    "Блины"
   ]
 };
 
-let selected = JSON.parse(localStorage.getItem("selectedRecipes") || "[]");
-let history = [];
 
-function saveSelected() {
-  localStorage.setItem("selectedRecipes", JSON.stringify(selected));
+const raw=n=>BASE+encodeURIComponent(n);
+
+
+let selected=JSON.parse(
+  localStorage.getItem("selectedRecipes")||"[]"
+);
+
+let stack=[];
+
+let currentCategory=null;
+
+
+function shell(img,buttons="",extra=""){
+
+  document.getElementById("app").innerHTML=
+    '<main class="book">'+
+      '<img class="page" src="'+raw(img)+'" alt="">'+
+      buttons+
+      extra+
+    '</main>';
+
 }
 
-function showCover() {
-  document.getElementById("app").innerHTML = `
-    <section class="screen cover">
-      <h1>Моя<br>кулинарная книга</h1>
-      <p>Любимые рецепты на каждый день</p>
-      <button class="button" onclick="showMenu()">Открыть меню</button>
-    </section>
-  `;
+
+function b(x,y,w,h,fn){
+
+  return '<button class="hit" '+
+    'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px" '+
+    'onclick="'+fn+'">'+
+    '</button>';
+
 }
 
-function showMenu() {
-  document.getElementById("app").innerHTML = `
-    <section class="screen">
-      <div class="header">
-        <h1>Главное меню</h1>
-        <button class="back" onclick="showCover()">Назад</button>
-      </div>
 
-      <div class="menu">
-        ${Object.keys(recipes).map(category => `
-          <button onclick="showCategory('${escapeQuotes(category)}')">
-            ${category}
-          </button>
-        `).join("")}
+/* ОБЛОЖКА */
 
-        <button onclick="showSelected()">
-          Мой выбор ${selected.length ? `(${selected.length})` : ""}
-        </button>
-      </div>
-    </section>
-  `;
+function cover(){
+
+  stack=[];
+
+  shell(
+    P.cover,
+    b(95,772,205,58,"menu()")
+  );
+
 }
 
-function showCategory(category) {
-  history.push("menu");
 
-  document.getElementById("app").innerHTML = `
-    <section class="screen">
-      <div class="header">
-        <h1>${category}</h1>
-        <button class="back" onclick="goBack()">Назад</button>
-      </div>
+/* ГЛАВНОЕ МЕНЮ */
 
-      <div class="recipe-list">
-        ${recipes[category].map((recipe, index) => `
-          <button class="recipe-card"
-            onclick="showRecipe('${escapeQuotes(category)}', ${index})">
-            <h3>${recipe[0]}</h3>
-            <p>${recipe[1]}</p>
-          </button>
-        `).join("")}
-      </div>
-    </section>
-  `;
+function menu(){
+
+  shell(
+    P.menu,
+
+    b(268,20,101,48,"showSelected()")+
+
+    b(18,222,355,84,"category('Салаты')")+
+
+    b(18,307,355,84,"category('Паста и макароны')")+
+
+    b(18,392,355,84,"category('Курица')")+
+
+    b(18,477,355,84,"category('Мясо')")+
+
+    b(18,562,355,84,"category('Супы')")+
+
+    b(18,647,355,84,"category('Быстро и сытно')")+
+
+    b(18,732,355,84,"category('Выпечка')")
+  );
+
 }
 
-function showRecipe(category, index) {
-  history.push({ type: "category", category });
 
-  const recipe = recipes[category][index];
-  const name = recipe[0];
+/* КАТЕГОРИЯ */
 
-  const isSelected = selected.includes(name);
+function category(name){
 
-  document.getElementById("app").innerHTML = `
-    <section class="screen">
-      <div class="header">
-        <button class="back" onclick="goBack()">Назад</button>
-      </div>
+  currentCategory=name;
 
-      <article class="recipe">
-        <div class="recipe-photo">
-  <img
-    src="https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/${encodeURIComponent(recipeImages[name])}"
-    alt="${name}"
-  >
-</div>
+  const bs=
+    b(18,22,75,45,"menu()")+
+    b(264,18,108,48,"showSelected()");
 
-        <div class="recipe-content">
-          <h1>${name}</h1>
+  const list=C[name].slice(0,5);
 
-          <p>${recipe[1]}</p>
+  let hits="";
 
-          <h2>Ингредиенты</h2>
-          <ul>
-            <li>Основные продукты</li>
-            <li>Овощи и зелень</li>
-            <li>Специи по вкусу</li>
-          </ul>
+  const ys=[
+    185,
+    320,
+    455,
+    590,
+    725
+  ];
 
-          <h2>Приготовление</h2>
-          <ol>
-            <li>Подготовить необходимые ингредиенты.</li>
-            <li>Приготовить основные продукты.</li>
-            <li>Соединить ингредиенты.</li>
-            <li>Подать готовое блюдо.</li>
-          </ol>
+  list.forEach((r,i)=>{
 
-          <button class="button favorite"
-            onclick="toggleSelected('${escapeQuotes(name)}')">
-            ${isSelected ? "Убрать из моего выбора" : "Добавить в мой выбор"}
-          </button>
-        </div>
-      </article>
-    </section>
-  `;
+    hits+=b(
+      20,
+      ys[i],
+      352,
+      130,
+      "recipe("+JSON.stringify(r)+")"
+    );
+
+  });
+
+  shell(
+    P[name],
+    bs+hits
+  );
+
 }
 
-function toggleSelected(name) {
-  if (selected.includes(name)) {
-    selected = selected.filter(item => item !== name);
-  } else {
+
+/* РЕЦЕПТ */
+
+function recipe(name){
+
+  stack.push(
+    ()=>category(currentCategory)
+  );
+
+  shell(
+    R[name],
+
+    b(18,22,75,45,"back()")+
+
+    b(264,18,108,48,"showSelected()")+
+
+    b(
+      20,
+      770,
+      353,
+      65,
+      "addRecipe("+JSON.stringify(name)+")"
+    )
+  );
+
+}
+
+
+/* ДОБАВИТЬ В МОЙ ВЫБОР */
+
+function addRecipe(name){
+
+  if(!selected.includes(name)){
+
     selected.push(name);
+
+    localStorage.setItem(
+      "selectedRecipes",
+      JSON.stringify(selected)
+    );
+
   }
 
-  saveSelected();
-  showMenu();
 }
 
-function showSelected() {
-  history.push("menu");
 
-  if (selected.length === 0) {
-    document.getElementById("app").innerHTML = `
-      <section class="screen">
-        <div class="header">
-          <h1>Мой выбор</h1>
-          <button class="back" onclick="showMenu()">Назад</button>
-        </div>
+/* НАЗАД */
 
-        <div class="empty">
-          <p>Пока ничего не выбрано</p>
-          <button class="button" onclick="showMenu()">
-            Выбрать блюда
-          </button>
-        </div>
-      </section>
-    `;
-    return;
+function back(){
+
+  const p=stack.pop();
+
+  if(p){
+
+    p();
+
+  }else{
+
+    menu();
+
   }
 
-  document.getElementById("app").innerHTML = `
-    <section class="screen">
-      <div class="header">
-        <h1>Мой выбор</h1>
-        <button class="back" onclick="showMenu()">Назад</button>
-      </div>
-
-      <div class="selected-list">
-        ${selected.map(name => `
-          <div class="selected-item">
-            <span>${name}</span>
-            <button class="remove"
-              onclick="removeSelected('${escapeQuotes(name)}')">
-              Удалить
-            </button>
-          </div>
-        `).join("")}
-      </div>
-
-      <button class="button" style="width:100%" onclick="sendSelection()">
-        Отправить мой выбор
-      </button>
-    </section>
-  `;
 }
 
-function removeSelected(name) {
-  selected = selected.filter(item => item !== name);
-  saveSelected();
+
+/* МОЙ ВЫБОР */
+
+function showSelected(){
+
+  if(selected.length===0){
+
+    shell(
+      P.empty,
+
+      b(18,20,75,45,"menu()")+
+
+      b(18,770,353,65,"menu()")
+    );
+
+  }else{
+
+    shell(
+      P.selected,
+
+      b(18,20,75,45,"menu()")+
+
+      b(18,770,353,65,"sendPage()")+
+
+      b(315,245,45,65,"removeFirst()")+
+
+      b(315,325,45,65,"removeSecond()")
+    );
+
+  }
+
+}
+
+
+/* УДАЛИТЬ ПЕРВЫЙ */
+
+function removeFirst(){
+
+  selected.shift();
+
+  localStorage.setItem(
+    "selectedRecipes",
+    JSON.stringify(selected)
+  );
+
   showSelected();
+
 }
 
-function sendSelection() {
-  const text = "Мой выбор:\\n\\n" + selected.map(x => "• " + x).join("\\n");
 
-  if (window.Telegram && Telegram.WebApp) {
-    Telegram.WebApp.showPopup({
-      title: "Мой выбор",
-      message: text,
-      buttons: [{type: "ok"}]
-    });
-  } else {
-    alert(text);
+/* УДАЛИТЬ ВТОРОЙ */
+
+function removeSecond(){
+
+  if(selected.length>1){
+
+    selected.splice(1,1);
+
   }
+
+  localStorage.setItem(
+    "selectedRecipes",
+    JSON.stringify(selected)
+  );
+
+  showSelected();
+
 }
 
-function goBack() {
-  const previous = history.pop();
 
-  if (previous === "menu") {
-    showMenu();
-  } else if (previous && previous.type === "category") {
-    showCategory(previous.category);
-  } else {
-    showMenu();
+/* СТРАНИЦА ОТПРАВКИ */
+
+function sendPage(){
+
+  const input=
+    '<input '+
+    'id="name" '+
+    'class="input-hit" '+
+    'style="left:24px;top:280px;width:345px;height:52px" '+
+    'placeholder="Например, Интеллигент" '+
+    'autocomplete="off">';
+
+  shell(
+    P.send,
+
+    b(18,20,75,45,"showSelected()")+
+
+    b(18,770,353,65,"sendChoice()"),
+
+    input
+  );
+
+}
+
+
+/* ОТПРАВИТЬ */
+
+function sendChoice(){
+
+  const name=
+    (document.getElementById("name")?.value||"").trim();
+
+  const payload={
+    name:name,
+    recipes:selected
+  };
+
+  if(
+    window.Telegram &&
+    Telegram.WebApp &&
+    Telegram.WebApp.sendData
+  ){
+
+    Telegram.WebApp.sendData(
+      JSON.stringify(payload)
+    );
+
   }
+
+  shell(
+    P.done,
+
+    b(18,770,353,65,"menu()")
+  );
+
 }
 
-function escapeQuotes(text) {
-  return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-}
 
-if (window.Telegram && Telegram.WebApp) {
+/* TELEGRAM */
+
+if(
+  window.Telegram &&
+  Telegram.WebApp
+){
+
   Telegram.WebApp.ready();
+
   Telegram.WebApp.expand();
+
 }
 
-showCover();
+
+/* СТАРТ */
+
+cover();
+
+</script>
+
+</body>
+</html><!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Моя кулинарная книга</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#f4eee5
+}
+
+body{
+  font-family:Arial,sans-serif
+}
+
+#app{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start
+}
+
+.book{
+  position:relative;
+  width:min(100vw,393px);
+  height:min(100vh,852px);
+  aspect-ratio:393/852;
+  overflow:hidden;
+  background:#f4eee5
+}
+
+.page{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:fill;
+  user-select:none;
+  -webkit-user-drag:none
+}
+
+.hit{
+  position:absolute;
+  border:0;
+  background:transparent;
+  padding:0;
+  margin:0;
+  z-index:5;
+  cursor:pointer
+}
+
+.hit:active{
+  background:rgba(0,0,0,.04)
+}
+
+.input-hit{
+  position:absolute;
+  z-index:6;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#777;
+  font:14px Arial;
+  padding:0 16px
+}
+
+.input-hit::placeholder{
+  color:#999
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+
+const BASE="https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/";
+
+const P={
+  cover:"00 - Обложка.png",
+  menu:"01 - Главное меню.png",
+
+  Салаты:"02 - Салаты.png",
+  "Паста и макароны":"11 - Паста и макароны.png",
+  Курица:"17 - Курица.png",
+  Мясо:"22 - Мясо.png",
+  Супы:"28 - Супы.png",
+  "Быстро и сытно":"34 - Быстро и сытно.png",
+  Выпечка:"39 - выпечка.png",
+
+  empty:"42 - Мой выбор - пусто.png",
+  selected:"42 - Мой выбор.png",
+  send:"44 - Отправка.png",
+  done:"45 - Готово.png"
+};
+
+
+const R={
+
+  "Летний салат":
+    "03 - Салаты  - 01 - Летний салат.png",
+
+  "Салат «Шакароб»":
+    "04 - Салаты  - 02 - Салат _Шакароб_.png",
+
+  "Салат «Лёгкий»":
+    "05 - Салаты  - 03 - Салат _Лёгкий_.png",
+
+  "Теплый салат":
+    "06 - Салаты  - 04 - Теплый салат.png",
+
+  "Оливье":
+    "07 - Салаты  - 05 - Оливье.png",
+
+  "Крабовый салат":
+    "08 - Салаты  - 06 - Крабовый салат.png",
+
+  "Винегрет":
+    "09 - Салаты  - 07 - Винегрет.png",
+
+  "Цезарь":
+    "10 - Салаты  - 08 - Цезарь.png",
+
+
+  "Болоньезе":
+    "12- Паста и макароны - 01 - Болоньезе.png",
+
+  "Макароны по-флотски":
+    "13- Паста и макароны - 02 - МАКАРОНЫ ПО-ФЛОТСКИ.png",
+
+  "Макароны с фаршем":
+    "14- Паста и макароны - 03 - МАКАРОНЫ с фаршем.png",
+
+  "Макароны с курицей и овощами":
+    "15- Паста и макароны - 04 - МАКАРОНЫ с курицей и овощами.png",
+
+  "Лазанья":
+    "16 - Паста и макароны - 04 - Лазанья.png",
+
+
+  "Курица + картофель + брокколи":
+    "18 - Курица - 01 - КУРИЦА + КАРТОФЕЛЬ + БРОККОЛИ.png",
+
+  "Курица с овощами":
+    "19 - Курица - 02 - КУРИЦА С ОВОЩАМИ.png",
+
+  "Курица + картофель + брюссельская капуста":
+    "20 - Курица - 03 - КУРИЦА + КАРТОФЕЛЬ + БРЮССЕЛЬСКАЯ КАПУСТА.png",
+
+  "Курица в сычуаньском соусе + рис":
+    "21 - Курица - 03 - КУРИЦА В СЫЧУАНЬСКОМ СОУСЕ + РИС.png",
+
+
+  "Говядина с картошкой":
+    "23- Мясо - 01 - ГОВЯДИНА С КАРТОШКОЙ.png",
+
+  "Стейк + картофель + брокколи":
+    "24 - Мясо - 02 - СТЕЙК + КАРТОФЕЛЬ + БРОККОЛИ.png",
+
+  "Говядина с овощами и рисом":
+    "25 - Мясо - 03 - ГОВЯДИНА с овощами и рисом.png",
+
+  "Мясо по-французски":
+    "26 - Мясо - 04 — МЯСО ПО-ФРАНЦУЗСКИ.png",
+
+  "Бриззоль с фаршем":
+    "27 - Мясо - 05 — БРИЗЗОЛЬ С ФАРШЕМ.png",
+
+
+  "Рассольник":
+    "29 - Супы - 01 — РАССОЛЬНИК.png",
+
+  "Борщ":
+    "30 - Супы - 02 — БОРЩ.png",
+
+  "Перловый суп с говядиной":
+    "31 - Супы - 03 — ПЕРЛОВЫЙ СУП С ГОВЯДИНОЙ.png",
+
+  "Солянка":
+    "32 - Супы - 04 — СОЛЯНКА.png",
+
+  "Лагман":
+    "33- Супы - 05 — ЛАГМАН.png",
+
+
+  "Рис с тушёнкой и фасолью":
+    "35 - БЫСТРО И СЫТНО - 01 — Рис с тушенкой и фасолью.png",
+
+  "Котлеты + гречка":
+    "36 - БЫСТРО И СЫТНО - 02 — КОТЛЕТЫ + ГРЕЧКА.png",
+
+  "Рис с фаршем и овощами":
+    "37 - БЫСТРО И СЫТНО - 03 — РИС С ФАРШЕМ И ОВОЩАМИ.png",
+
+  "Плов":
+    "38 - БЫСТРО И СЫТНО - 04 — ПЛОВ.png",
+
+
+  "Хачапури":
+    "40 - выпечка - 01 - хачапури.png",
+
+  "Блины":
+    "41 - выпечка - 02 - блины.png"
+};
+
+
+const C={
+
+  "Салаты":[
+    "Летний салат",
+    "Салат «Шакароб»",
+    "Салат «Лёгкий»",
+    "Теплый салат",
+    "Оливье",
+    "Крабовый салат",
+    "Винегрет",
+    "Цезарь"
+  ],
+
+  "Паста и макароны":[
+    "Болоньезе",
+    "Макароны по-флотски",
+    "Макароны с фаршем",
+    "Макароны с курицей и овощами",
+    "Лазанья"
+  ],
+
+  Курица:[
+    "Курица + картофель + брокколи",
+    "Курица с овощами",
+    "Курица + картофель + брюссельская капуста",
+    "Курица в сычуаньском соусе + рис"
+  ],
+
+  Мясо:[
+    "Говядина с картошкой",
+    "Стейк + картофель + брокколи",
+    "Говядина с овощами и рисом",
+    "Мясо по-французски",
+    "Бриззоль с фаршем"
+  ],
+
+  Супы:[
+    "Рассольник",
+    "Борщ",
+    "Перловый суп с говядиной",
+    "Солянка",
+    "Лагман"
+  ],
+
+  "Быстро и сытно":[
+    "Рис с тушёнкой и фасолью",
+    "Котлеты + гречка",
+    "Рис с фаршем и овощами",
+    "Плов"
+  ],
+
+  Выпечка:[
+    "Хачапури",
+    "Блины"
+  ]
+};
+
+
+const raw=n=>BASE+encodeURIComponent(n);
+
+
+let selected=JSON.parse(
+  localStorage.getItem("selectedRecipes")||"[]"
+);
+
+let stack=[];
+
+let currentCategory=null;
+
+
+function shell(img,buttons="",extra=""){
+
+  document.getElementById("app").innerHTML=
+    '<main class="book">'+
+      '<img class="page" src="'+raw(img)+'" alt="">'+
+      buttons+
+      extra+
+    '</main>';
+
+}
+
+
+function b(x,y,w,h,fn){
+
+  return '<button class="hit" '+
+    'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px" '+
+    'onclick="'+fn+'">'+
+    '</button>';
+
+}
+
+
+/* ОБЛОЖКА */
+
+function cover(){
+
+  stack=[];
+
+  shell(
+    P.cover,
+    b(95,772,205,58,"menu()")
+  );
+
+}
+
+
+/* ГЛАВНОЕ МЕНЮ */
+
+function menu(){
+
+  shell(
+    P.menu,
+
+    b(268,20,101,48,"showSelected()")+
+
+    b(18,222,355,84,"category('Салаты')")+
+
+    b(18,307,355,84,"category('Паста и макароны')")+
+
+    b(18,392,355,84,"category('Курица')")+
+
+    b(18,477,355,84,"category('Мясо')")+
+
+    b(18,562,355,84,"category('Супы')")+
+
+    b(18,647,355,84,"category('Быстро и сытно')")+
+
+    b(18,732,355,84,"category('Выпечка')")
+  );
+
+}
+
+
+/* КАТЕГОРИЯ */
+
+function category(name){
+
+  currentCategory=name;
+
+  const bs=
+    b(18,22,75,45,"menu()")+
+    b(264,18,108,48,"showSelected()");
+
+  const list=C[name].slice(0,5);
+
+  let hits="";
+
+  const ys=[
+    185,
+    320,
+    455,
+    590,
+    725
+  ];
+
+  list.forEach((r,i)=>{
+
+    hits+=b(
+      20,
+      ys[i],
+      352,
+      130,
+      "recipe("+JSON.stringify(r)+")"
+    );
+
+  });
+
+  shell(
+    P[name],
+    bs+hits
+  );
+
+}
+
+
+/* РЕЦЕПТ */
+
+function recipe(name){
+
+  stack.push(
+    ()=>category(currentCategory)
+  );
+
+  shell(
+    R[name],
+
+    b(18,22,75,45,"back()")+
+
+    b(264,18,108,48,"showSelected()")+
+
+    b(
+      20,
+      770,
+      353,
+      65,
+      "addRecipe("+JSON.stringify(name)+")"
+    )
+  );
+
+}
+
+
+/* ДОБАВИТЬ В МОЙ ВЫБОР */
+
+function addRecipe(name){
+
+  if(!selected.includes(name)){
+
+    selected.push(name);
+
+    localStorage.setItem(
+      "selectedRecipes",
+      JSON.stringify(selected)
+    );
+
+  }
+
+}
+
+
+/* НАЗАД */
+
+function back(){
+
+  const p=stack.pop();
+
+  if(p){
+
+    p();
+
+  }else{
+
+    menu();
+
+  }
+
+}
+
+
+/* МОЙ ВЫБОР */
+
+function showSelected(){
+
+  if(selected.length===0){
+
+    shell(
+      P.empty,
+
+      b(18,20,75,45,"menu()")+
+
+      b(18,770,353,65,"menu()")
+    );
+
+  }else{
+
+    shell(
+      P.selected,
+
+      b(18,20,75,45,"menu()")+
+
+      b(18,770,353,65,"sendPage()")+
+
+      b(315,245,45,65,"removeFirst()")+
+
+      b(315,325,45,65,"removeSecond()")
+    );
+
+  }
+
+}
+
+
+/* УДАЛИТЬ ПЕРВЫЙ */
+
+function removeFirst(){
+
+  selected.shift();
+
+  localStorage.setItem(
+    "selectedRecipes",
+    JSON.stringify(selected)
+  );
+
+  showSelected();
+
+}
+
+
+/* УДАЛИТЬ ВТОРОЙ */
+
+function removeSecond(){
+
+  if(selected.length>1){
+
+    selected.splice(1,1);
+
+  }
+
+  localStorage.setItem(
+    "selectedRecipes",
+    JSON.stringify(selected)
+  );
+
+  showSelected();
+
+}
+
+
+/* СТРАНИЦА ОТПРАВКИ */
+
+function sendPage(){
+
+  const input=
+    '<input '+
+    'id="name" '+
+    'class="input-hit" '+
+    'style="left:24px;top:280px;width:345px;height:52px" '+
+    'placeholder="Например, Интеллигент" '+
+    'autocomplete="off">';
+
+  shell(
+    P.send,
+
+    b(18,20,75,45,"showSelected()")+
+
+    b(18,770,353,65,"sendChoice()"),
+
+    input
+  );
+
+}
+
+
+/* ОТПРАВИТЬ */
+
+function sendChoice(){
+
+  const name=
+    (document.getElementById("name")?.value||"").trim();
+
+  const payload={
+    name:name,
+    recipes:selected
+  };
+
+  if(
+    window.Telegram &&
+    Telegram.WebApp &&
+    Telegram.WebApp.sendData
+  ){
+
+    Telegram.WebApp.sendData(
+      JSON.stringify(payload)
+    );
+
+  }
+
+  shell(
+    P.done,
+
+    b(18,770,353,65,"menu()")
+  );
+
+}
+
+
+/* TELEGRAM */
+
+if(
+  window.Telegram &&
+  Telegram.WebApp
+){
+
+  Telegram.WebApp.ready();
+
+  Telegram.WebApp.expand();
+
+}
+
+
+/* СТАРТ */
+
+cover();
+
 </script>
 
 </body>
