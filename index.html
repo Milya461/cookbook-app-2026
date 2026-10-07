@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Моя кулинарная книга</title>
-
 <style>
 * {
   box-sizing: border-box;
@@ -192,11 +191,8 @@ button {
 }
 </style>
 </head>
-
 <body>
-
 <div id="app"></div>
-
 <script>
 const recipes = {
   "Салаты": [
@@ -254,19 +250,30 @@ const recipes = {
   ]
 };
 
-let selected = JSON.parse(localStorage.getItem("selectedRecipes") || "[]");
+let selected = JSON.parse(
+  localStorage.getItem("selectedRecipes") || "[]"
+);
+
 let history = [];
 
 function saveSelected() {
-  localStorage.setItem("selectedRecipes", JSON.stringify(selected));
+  localStorage.setItem(
+    "selectedRecipes",
+    JSON.stringify(selected)
+  );
 }
 
 function showCover() {
+  history = [];
+
   document.getElementById("app").innerHTML = `
     <section class="screen cover">
       <h1>Моя<br>кулинарная книга</h1>
       <p>Любимые рецепты на каждый день</p>
-      <button class="button" onclick="showMenu()">Открыть меню</button>
+
+      <button class="button" onclick="showMenu()">
+        Открыть меню
+      </button>
     </section>
   `;
 }
@@ -274,103 +281,79 @@ function showCover() {
 function showMenu() {
   document.getElementById("app").innerHTML = `
     <section class="screen">
+
       <div class="header">
         <h1>Главное меню</h1>
-        <button class="back" onclick="showCover()">Назад</button>
+
+        <button class="back" onclick="showCover()">
+          Назад
+        </button>
       </div>
 
       <div class="menu">
+
         ${Object.keys(recipes).map(category => `
-          <button onclick="showCategory('${escapeQuotes(category)}')">
+          <button onclick="openCategory('${escapeQuotes(category)}')">
             ${category}
           </button>
         `).join("")}
 
-        <button onclick="showSelected()">
+        <button onclick="openSelected()">
           Мой выбор ${selected.length ? `(${selected.length})` : ""}
         </button>
+
       </div>
     </section>
   `;
 }
 
-function showCategory(category) {
+function openCategory(category) {
   history.push({
     page: "menu"
   });
 
+  showCategory(category);
+}
+
+function showCategory(category) {
   document.getElementById("app").innerHTML = `
     <section class="screen">
+
       <div class="header">
         <h1>${category}</h1>
-        <button class="back" onclick="goBack()">Назад</button>
+
+        <button class="back" onclick="goBack()">
+          Назад
+        </button>
       </div>
 
       <div class="recipe-list">
+
         ${recipes[category].map((recipe, index) => `
-          <button class="recipe-card"
-            onclick="showRecipe('${escapeQuotes(category)}', ${index})">
+          <button
+            class="recipe-card"
+            onclick="openRecipe('${escapeQuotes(category)}', ${index})"
+          >
             <h3>${recipe[0]}</h3>
             <p>${recipe[1]}</p>
           </button>
         `).join("")}
+
       </div>
     </section>
   `;
 }
 
-function showRecipe(category, index) {
+function openRecipe(category, index) {
   history.push({
     page: "category",
     category: category
   });
 
-  const recipe = recipes[category][index];
-  const name = recipe[0];
-
-  const isSelected = selected.includes(name);
-
-  document.getElementById("app").innerHTML = `
-    <section class="screen">
-      <div class="header">
-        <button class="back" onclick="goBack()">Назад</button>
-      </div>
-
-      <article class="recipe">
-        <div class="recipe-photo">
-          Фото блюда
-        </div>
-
-        <div class="recipe-content">
-          <h1>${name}</h1>
-
-          <p>${recipe[1]}</p>
-
-          <h2>Ингредиенты</h2>
-          <ul>
-            <li>Основные продукты</li>
-            <li>Овощи и зелень</li>
-            <li>Специи по вкусу</li>
-          </ul>
-
-          <h2>Приготовление</h2>
-          <ol>
-            <li>Подготовить необходимые ингредиенты.</li>
-            <li>Приготовить основные продукты.</li>
-            <li>Соединить ингредиенты.</li>
-            <li>Подать готовое блюдо.</li>
-          </ol>
-
-          <button class="button favorite"
-            onclick="toggleSelected('${escapeQuotes(name)}')">
-            ${isSelected ? "Убрать из моего выбора" : "Добавить в мой выбор"}
-          </button>
-        </div>
-      </article>
-    </section>
-  `;
+  showRecipe(category, index);
 }
 
+function showRecipe(category, index) {
   const recipe = recipes[category][index];
   const name = recipe[0];
 
@@ -378,21 +361,27 @@ function showRecipe(category, index) {
 
   document.getElementById("app").innerHTML = `
     <section class="screen">
+
       <div class="header">
-        <button class="back" onclick="goBack()">Назад</button>
+        <button class="back" onclick="goBack()">
+          Назад
+        </button>
       </div>
 
       <article class="recipe">
+
         <div class="recipe-photo">
           Фото блюда
         </div>
 
         <div class="recipe-content">
+
           <h1>${name}</h1>
 
           <p>${recipe[1]}</p>
 
           <h2>Ингредиенты</h2>
+
           <ul>
             <li>Основные продукты</li>
             <li>Овощи и зелень</li>
@@ -400,6 +389,7 @@ function showRecipe(category, index) {
           </ul>
 
           <h2>Приготовление</h2>
+
           <ol>
             <li>Подготовить необходимые ингредиенты.</li>
             <li>Приготовить основные продукты.</li>
@@ -407,10 +397,17 @@ function showRecipe(category, index) {
             <li>Подать готовое блюдо.</li>
           </ol>
 
-          <button class="button favorite"
-            onclick="toggleSelected('${escapeQuotes(name)}')">
-            ${isSelected ? "Убрать из моего выбора" : "Добавить в мой выбор"}
+          <button
+            class="button favorite"
+            onclick="toggleSelected('${escapeQuotes(name)}')"
+          >
+            ${
+              isSelected
+                ? "Убрать из моего выбора"
+                : "Добавить в мой выбор"
+            }
           </button>
+
         </div>
       </article>
     </section>
@@ -425,100 +422,147 @@ function toggleSelected(name) {
   }
 
   saveSelected();
+
   showMenu();
 }
 
-function showSelected() {
-  history.push("menu");
+function openSelected() {
+  history.push({
+    page: "menu"
+  });
 
+  showSelected();
+}
+
+function showSelected() {
   if (selected.length === 0) {
+
     document.getElementById("app").innerHTML = `
       <section class="screen">
+
         <div class="header">
           <h1>Мой выбор</h1>
-          <button class="back" onclick="showMenu()">Назад</button>
+
+          <button class="back" onclick="goBack()">
+            Назад
+          </button>
         </div>
 
         <div class="empty">
+
           <p>Пока ничего не выбрано</p>
-          <button class="button" onclick="showMenu()">
+
+          <button class="button" onclick="goBack()">
             Выбрать блюда
           </button>
+
         </div>
+
       </section>
     `;
+
     return;
   }
 
   document.getElementById("app").innerHTML = `
     <section class="screen">
+
       <div class="header">
         <h1>Мой выбор</h1>
-        <button class="back" onclick="showMenu()">Назад</button>
+
+        <button class="back" onclick="goBack()">
+          Назад
+        </button>
       </div>
 
       <div class="selected-list">
+
         ${selected.map(name => `
           <div class="selected-item">
+
             <span>${name}</span>
-            <button class="remove"
-              onclick="removeSelected('${escapeQuotes(name)}')">
+
+            <button
+              class="remove"
+              onclick="removeSelected('${escapeQuotes(name)}')"
+            >
               Удалить
             </button>
+
           </div>
         `).join("")}
+
       </div>
 
-      <button class="button" style="width:100%" onclick="sendSelection()">
+      <button
+        class="button"
+        style="width:100%"
+        onclick="sendSelection()"
+      >
         Отправить мой выбор
       </button>
+
     </section>
   `;
 }
 
 function removeSelected(name) {
   selected = selected.filter(item => item !== name);
+
   saveSelected();
+
   showSelected();
 }
 
 function sendSelection() {
-  const text = "Мой выбор:\\n\\n" + selected.map(x => "• " + x).join("\\n");
+  const text =
+    "Мой выбор:\n\n" +
+    selected.map(x => "• " + x).join("\n");
 
   if (window.Telegram && Telegram.WebApp) {
+
     Telegram.WebApp.showPopup({
       title: "Мой выбор",
       message: text,
-      buttons: [{type: "ok"}]
+      buttons: [
+        {
+          type: "ok"
+        }
+      ]
     });
+
   } else {
+
     alert(text);
+
   }
 }
 
 function goBack() {
   const previous = history.pop();
 
-  if (previous && previous.page === "category") {
-    showCategory(previous.category);
-  } else if (previous === "menu") {
+  if (!previous) {
     showMenu();
-  } else {
-    showMenu();
+    return;
   }
-}
 
-  if (previous === "menu") {
+  if (previous.page === "menu") {
     showMenu();
-  } else if (previous === "category") {
-    showMenu();
-  } else {
-    showMenu();
+    return;
   }
+
+  if (previous.page === "category") {
+    showCategory(previous.category);
+    return;
+  }
+
+  showMenu();
 }
 
 function escapeQuotes(text) {
-  return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+  return text
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
 }
 
 if (window.Telegram && Telegram.WebApp) {
@@ -528,6 +572,5 @@ if (window.Telegram && Telegram.WebApp) {
 
 showCover();
 </script>
-
 </body>
 </html>
