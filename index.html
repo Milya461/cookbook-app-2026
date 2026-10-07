@@ -1,11 +1,473 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Моя кулинарная книга</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Моя кулинарная книга</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f7f3ed;
+  color: #2d2926;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button {
+  font: inherit;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.screen {
+  min-height: 100vh;
+  padding: 24px 20px 40px;
+}
+
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cover h1 {
+  font-size: 42px;
+  line-height: 1.05;
+  margin: 0 0 14px;
+}
+
+.cover p {
+  font-size: 18px;
+  margin: 0 0 35px;
+}
+
+.button {
+  border: 0;
+  border-radius: 30px;
+  padding: 15px 28px;
+  background: #2d2926;
+  color: white;
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.header h1 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.back {
+  border: 0;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.menu {
+  display: grid;
+  gap: 14px;
+}
+
+.menu button,
+.recipe-card {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  background: white;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  cursor: pointer;
+}
+
+.menu button {
+  font-size: 20px;
+}
+
+.recipe-list {
+  display: grid;
+  gap: 14px;
+}
+
+.recipe-card h3 {
+  margin: 0 0 7px;
+  font-size: 20px;
+}
+
+.recipe-card p {
+  margin: 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.recipe {
+  background: white;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.recipe-photo {
+  height: 220px;
+  background: #ddd2c5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #75695e;
+  font-size: 16px;
+}
+
+.recipe-content {
+  padding: 24px;
+}
+
+.recipe-content h1 {
+  margin: 0 0 18px;
+  font-size: 30px;
+}
+
+.recipe-content h2 {
+  font-size: 20px;
+  margin: 25px 0 10px;
+}
+
+.recipe-content ul,
+.recipe-content ol {
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.favorite {
+  width: 100%;
+  margin-top: 25px;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty p {
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.selected-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.selected-item {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.remove {
+  border: 0;
+  background: transparent;
+  color: #a33;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  <h1>Моя кулинарная книга</h1>
+
+<div id="app"></div>
+
+<script>
+const recipes = {
+  "Салаты": [
+    ["Летний салат", "Свежий лёгкий салат"],
+    ["Салат «Шакароб»", "Помидоры, лук и свежая зелень"],
+    ["Салат «Лёгкий»", "Простой овощной салат"],
+    ["Теплый салат", "Тёплые овощи и мясо"],
+    ["Оливье", "Классический домашний салат"],
+    ["Крабовый салат", "Крабовые палочки и овощи"],
+    ["Винегрет", "Овощной салат со свёклой"],
+    ["Цезарь", "Курица, салат и соус"]
+  ],
+
+  "Паста и макароны": [
+    ["Болоньезе", "Макароны с мясным соусом"],
+    ["Макароны по-флотски", "Макароны с фаршем"],
+    ["Макароны с фаршем", "Домашние макароны с мясом"],
+    ["Макароны с курицей и овощами", "Курица, овощи и макароны"],
+    ["Лазанья", "Слои пасты с мясным соусом"]
+  ],
+
+  "Курица": [
+    ["Курица + картофель + брокколи", "Запечённая курица с овощами"],
+    ["Курица с овощами", "Курица с овощами"],
+    ["Курица + картофель + брюссельская капуста", "Курица и овощи"],
+    ["Курица в сычуаньском соусе + рис", "Острая курица с рисом"]
+  ],
+
+  "Мясо": [
+    ["Говядина с картошкой", "Говядина и картофель"],
+    ["Стейк + картофель + брокколи", "Стейк с гарниром"],
+    ["Говядина с овощами и рисом", "Говядина, овощи и рис"],
+    ["Мясо по-французски", "Мясо под сырной корочкой"],
+    ["Бриззоль с фаршем", "Домашнее мясное блюдо"]
+  ],
+
+  "Супы": [
+    ["Рассольник", "Домашний суп с солёными огурцами"],
+    ["Борщ", "Классический домашний борщ"],
+    ["Перловый суп с говядиной", "Сытный суп с перловкой"],
+    ["Солянка", "Наваристый мясной суп"],
+    ["Лагман", "Суп с мясом и лапшой"]
+  ],
+
+  "Быстро и сытно": [
+    ["Рис с тушёнкой и фасолью", "Быстрый сытный ужин"],
+    ["Котлеты + гречка", "Домашние котлеты с гарниром"],
+    ["Рис с фаршем и овощами", "Рис с мясом и овощами"],
+    ["Плов", "Домашний плов"]
+  ],
+
+  "Выпечка": [
+    ["Хачапури", "Домашняя выпечка с сыром"],
+    ["Блины", "Тонкие домашние блины"]
+  ]
+};
+
+let selected = JSON.parse(localStorage.getItem("selectedRecipes") || "[]");
+let history = [];
+
+function saveSelected() {
+  localStorage.setItem("selectedRecipes", JSON.stringify(selected));
+}
+
+function showCover() {
+  document.getElementById("app").innerHTML = `
+    <section class="screen cover">
+      <h1>Моя<br>кулинарная книга</h1>
+      <p>Любимые рецепты на каждый день</p>
+      <button class="button" onclick="showMenu()">Открыть меню</button>
+    </section>
+  `;
+}
+
+function showMenu() {
+  document.getElementById("app").innerHTML = `
+    <section class="screen">
+      <div class="header">
+        <h1>Главное меню</h1>
+        <button class="back" onclick="showCover()">Назад</button>
+      </div>
+
+      <div class="menu">
+        ${Object.keys(recipes).map(category => `
+          <button onclick="showCategory('${escapeQuotes(category)}')">
+            ${category}
+          </button>
+        `).join("")}
+
+        <button onclick="showSelected()">
+          Мой выбор ${selected.length ? `(${selected.length})` : ""}
+        </button>
+      </div>
+    </section>
+  `;
+}
+
+function showCategory(category) {
+  history.push("menu");
+
+  document.getElementById("app").innerHTML = `
+    <section class="screen">
+      <div class="header">
+        <h1>${category}</h1>
+        <button class="back" onclick="goBack()">Назад</button>
+      </div>
+
+      <div class="recipe-list">
+        ${recipes[category].map((recipe, index) => `
+          <button class="recipe-card"
+            onclick="showRecipe('${escapeQuotes(category)}', ${index})">
+            <h3>${recipe[0]}</h3>
+            <p>${recipe[1]}</p>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function showRecipe(category, index) {
+  history.push("category");
+
+  const recipe = recipes[category][index];
+  const name = recipe[0];
+
+  const isSelected = selected.includes(name);
+
+  document.getElementById("app").innerHTML = `
+    <section class="screen">
+      <div class="header">
+        <button class="back" onclick="goBack()">Назад</button>
+      </div>
+
+      <article class="recipe">
+        <div class="recipe-photo">
+          Фото блюда
+        </div>
+
+        <div class="recipe-content">
+          <h1>${name}</h1>
+
+          <p>${recipe[1]}</p>
+
+          <h2>Ингредиенты</h2>
+          <ul>
+            <li>Основные продукты</li>
+            <li>Овощи и зелень</li>
+            <li>Специи по вкусу</li>
+          </ul>
+
+          <h2>Приготовление</h2>
+          <ol>
+            <li>Подготовить необходимые ингредиенты.</li>
+            <li>Приготовить основные продукты.</li>
+            <li>Соединить ингредиенты.</li>
+            <li>Подать готовое блюдо.</li>
+          </ol>
+
+          <button class="button favorite"
+            onclick="toggleSelected('${escapeQuotes(name)}')">
+            ${isSelected ? "Убрать из моего выбора" : "Добавить в мой выбор"}
+          </button>
+        </div>
+      </article>
+    </section>
+  `;
+}
+
+function toggleSelected(name) {
+  if (selected.includes(name)) {
+    selected = selected.filter(item => item !== name);
+  } else {
+    selected.push(name);
+  }
+
+  saveSelected();
+  showMenu();
+}
+
+function showSelected() {
+  history.push("menu");
+
+  if (selected.length === 0) {
+    document.getElementById("app").innerHTML = `
+      <section class="screen">
+        <div class="header">
+          <h1>Мой выбор</h1>
+          <button class="back" onclick="showMenu()">Назад</button>
+        </div>
+
+        <div class="empty">
+          <p>Пока ничего не выбрано</p>
+          <button class="button" onclick="showMenu()">
+            Выбрать блюда
+          </button>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
+  document.getElementById("app").innerHTML = `
+    <section class="screen">
+      <div class="header">
+        <h1>Мой выбор</h1>
+        <button class="back" onclick="showMenu()">Назад</button>
+      </div>
+
+      <div class="selected-list">
+        ${selected.map(name => `
+          <div class="selected-item">
+            <span>${name}</span>
+            <button class="remove"
+              onclick="removeSelected('${escapeQuotes(name)}')">
+              Удалить
+            </button>
+          </div>
+        `).join("")}
+      </div>
+
+      <button class="button" style="width:100%" onclick="sendSelection()">
+        Отправить мой выбор
+      </button>
+    </section>
+  `;
+}
+
+function removeSelected(name) {
+  selected = selected.filter(item => item !== name);
+  saveSelected();
+  showSelected();
+}
+
+function sendSelection() {
+  const text = "Мой выбор:\\n\\n" + selected.map(x => "• " + x).join("\\n");
+
+  if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.showPopup({
+      title: "Мой выбор",
+      message: text,
+      buttons: [{type: "ok"}]
+    });
+  } else {
+    alert(text);
+  }
+}
+
+function goBack() {
+  const previous = history.pop();
+
+  if (previous === "menu") {
+    showMenu();
+  } else if (previous === "category") {
+    showMenu();
+  } else {
+    showMenu();
+  }
+}
+
+function escapeQuotes(text) {
+  return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
+showCover();
+</script>
+
 </body>
 </html>
