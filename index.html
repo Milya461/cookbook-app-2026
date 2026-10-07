@@ -647,31 +647,6 @@ async function sendSelection() {
   }
 }
 
-  const text =
-    "Мой выбор:\n\n" +
-    selected
-      .map(x => "• " + x)
-      .join("\n");
-
-  if (window.Telegram && Telegram.WebApp) {
-
-    Telegram.WebApp.showPopup({
-      title: "Мой выбор",
-      message: text,
-      buttons: [
-        {
-          type: "ok"
-        }
-      ]
-    });
-
-  } else {
-
-    alert(text);
-
-  }
-}
-
 /* НАЗАД */
 
 function goBack() {
