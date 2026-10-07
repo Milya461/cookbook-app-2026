@@ -581,25 +581,29 @@ async function sendSelection() {
       Telegram.WebApp.showPopup({
         title: "Мой выбор",
         message: "Сначала выберите хотя бы одно блюдо.",
-        buttons: [{ type: "ok" }]
+        buttons: [
+          {
+            type: "ok"
+          }
+        ]
       });
     } else {
       alert("Сначала выберите хотя бы одно блюдо.");
     }
+
     return;
   }
 
-  const user =
-    window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+  const tg =
+    window.Telegram &&
+    Telegram.WebApp
+      ? Telegram.WebApp
+      : null;
 
-  const name = [
-    user.first_name,
-    user.last_name
-  ]
-    .filter(Boolean)
-    .join(" ") || "Без имени";
-
-  const username = user.username || "";
+  const initData =
+    tg
+      ? tg.initData
+      : "";
 
   try {
     const response = await fetch(
@@ -610,8 +614,7 @@ async function sendSelection() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name: name,
-          username: username,
+          initData: initData,
           dishes: selected
         })
       }
@@ -620,14 +623,20 @@ async function sendSelection() {
     const result = await response.json();
 
     if (!result.ok) {
-      throw new Error(result.error || "Ошибка отправки");
+      throw new Error(
+        result.error || "Ошибка отправки"
+      );
     }
 
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.showPopup({
+    if (tg) {
+      tg.showPopup({
         title: "Готово",
         message: "Ваш выбор отправлен.",
-        buttons: [{ type: "ok" }]
+        buttons: [
+          {
+            type: "ok"
+          }
+        ]
       });
     } else {
       alert("Ваш выбор отправлен.");
@@ -636,14 +645,18 @@ async function sendSelection() {
   } catch (error) {
     console.error(error);
 
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.showPopup({
+    if (tg) {
+      tg.showPopup({
         title: "Ошибка",
-        message: "Не удалось отправить выбор. Попробуйте ещё раз.",
-        buttons: [{ type: "ok" }]
+        message: error.message,
+        buttons: [
+          {
+            type: "ok"
+          }
+        ]
       });
     } else {
-      alert("Не удалось отправить выбор. Попробуйте ещё раз.");
+      alert(error.message);
     }
   }
 }
