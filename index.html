@@ -295,7 +295,9 @@ function showMenu() {
 }
 
 function showCategory(category) {
-  history.push("menu");
+  history.push({
+    page: "menu"
+  });
 
   document.getElementById("app").innerHTML = `
     <section class="screen">
@@ -496,6 +498,15 @@ function sendSelection() {
 
 function goBack() {
   const previous = history.pop();
+
+  if (previous && previous.page === "category") {
+    showCategory(previous.category);
+  } else if (previous === "menu") {
+    showMenu();
+  } else {
+    showMenu();
+  }
+}
 
   if (previous === "menu") {
     showMenu();
