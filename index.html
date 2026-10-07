@@ -263,12 +263,15 @@ function saveSelected() {
   );
 }
 
+/* ОБЛОЖКА */
+
 function showCover() {
   history = [];
 
   document.getElementById("app").innerHTML = `
     <section class="screen cover">
       <h1>Моя<br>кулинарная книга</h1>
+
       <p>Любимые рецепты на каждый день</p>
 
       <button class="button" onclick="showMenu()">
@@ -277,6 +280,8 @@ function showCover() {
     </section>
   `;
 }
+
+/* ГЛАВНОЕ МЕНЮ */
 
 function showMenu() {
   document.getElementById("app").innerHTML = `
@@ -293,7 +298,9 @@ function showMenu() {
       <div class="menu">
 
         ${Object.keys(recipes).map(category => `
-          <button onclick="openCategory('${escapeQuotes(category)}')">
+          <button
+            onclick="openCategory('${escapeQuotes(category)}')"
+          >
             ${category}
           </button>
         `).join("")}
@@ -303,11 +310,15 @@ function showMenu() {
         </button>
 
       </div>
+
     </section>
   `;
 }
 
+/* ОТКРЫТЬ КАТЕГОРИЮ */
+
 function openCategory(category) {
+
   history.push({
     page: "menu"
   });
@@ -315,16 +326,21 @@ function openCategory(category) {
   showCategory(category);
 }
 
+/* КАТЕГОРИЯ */
+
 function showCategory(category) {
+
   document.getElementById("app").innerHTML = `
     <section class="screen">
 
       <div class="header">
+
         <h1>${category}</h1>
 
         <button class="back" onclick="goBack()">
           Назад
         </button>
+
       </div>
 
       <div class="recipe-list">
@@ -334,17 +350,24 @@ function showCategory(category) {
             class="recipe-card"
             onclick="openRecipe('${escapeQuotes(category)}', ${index})"
           >
+
             <h3>${recipe[0]}</h3>
+
             <p>${recipe[1]}</p>
+
           </button>
         `).join("")}
 
       </div>
+
     </section>
   `;
 }
 
+/* ОТКРЫТЬ РЕЦЕПТ */
+
 function openRecipe(category, index) {
+
   history.push({
     page: "category",
     category: category
@@ -353,8 +376,12 @@ function openRecipe(category, index) {
   showRecipe(category, index);
 }
 
+/* РЕЦЕПТ */
+
 function showRecipe(category, index) {
+
   const recipe = recipes[category][index];
+
   const name = recipe[0];
 
   const isSelected = selected.includes(name);
@@ -363,9 +390,11 @@ function showRecipe(category, index) {
     <section class="screen">
 
       <div class="header">
+
         <button class="back" onclick="goBack()">
           Назад
         </button>
+
       </div>
 
       <article class="recipe">
@@ -409,16 +438,27 @@ function showRecipe(category, index) {
           </button>
 
         </div>
+
       </article>
+
     </section>
   `;
 }
 
+/* ДОБАВИТЬ / УДАЛИТЬ ИЗ МОЕГО ВЫБОРА */
+
 function toggleSelected(name) {
+
   if (selected.includes(name)) {
-    selected = selected.filter(item => item !== name);
+
+    selected = selected.filter(
+      item => item !== name
+    );
+
   } else {
+
     selected.push(name);
+
   }
 
   saveSelected();
@@ -426,7 +466,10 @@ function toggleSelected(name) {
   showMenu();
 }
 
+/* ОТКРЫТЬ МОЙ ВЫБОР */
+
 function openSelected() {
+
   history.push({
     page: "menu"
   });
@@ -434,25 +477,33 @@ function openSelected() {
   showSelected();
 }
 
+/* МОЙ ВЫБОР */
+
 function showSelected() {
+
   if (selected.length === 0) {
 
     document.getElementById("app").innerHTML = `
       <section class="screen">
 
         <div class="header">
+
           <h1>Мой выбор</h1>
 
           <button class="back" onclick="goBack()">
             Назад
           </button>
+
         </div>
 
         <div class="empty">
 
           <p>Пока ничего не выбрано</p>
 
-          <button class="button" onclick="goBack()">
+          <button
+            class="button"
+            onclick="goBack()"
+          >
             Выбрать блюда
           </button>
 
@@ -468,11 +519,13 @@ function showSelected() {
     <section class="screen">
 
       <div class="header">
+
         <h1>Мой выбор</h1>
 
         <button class="back" onclick="goBack()">
           Назад
         </button>
+
       </div>
 
       <div class="selected-list">
@@ -506,18 +559,28 @@ function showSelected() {
   `;
 }
 
+/* УДАЛИТЬ ИЗ МОЕГО ВЫБОРА */
+
 function removeSelected(name) {
-  selected = selected.filter(item => item !== name);
+
+  selected = selected.filter(
+    item => item !== name
+  );
 
   saveSelected();
 
   showSelected();
 }
 
+/* ОТПРАВИТЬ В TELEGRAM */
+
 function sendSelection() {
+
   const text =
     "Мой выбор:\n\n" +
-    selected.map(x => "• " + x).join("\n");
+    selected
+      .map(x => "• " + x)
+      .join("\n");
 
   if (window.Telegram && Telegram.WebApp) {
 
@@ -538,39 +601,58 @@ function sendSelection() {
   }
 }
 
+/* НАЗАД */
+
 function goBack() {
+
   const previous = history.pop();
 
   if (!previous) {
+
     showMenu();
+
     return;
   }
 
   if (previous.page === "menu") {
+
     showMenu();
+
     return;
   }
 
   if (previous.page === "category") {
+
     showCategory(previous.category);
+
     return;
   }
 
   showMenu();
 }
 
+/* ЗАЩИТА КАВЫЧЕК */
+
 function escapeQuotes(text) {
+
   return text
     .replace(/\\/g, "\\\\")
     .replace(/'/g, "\\'");
 }
 
+/* TELEGRAM */
+
 if (window.Telegram && Telegram.WebApp) {
+
   Telegram.WebApp.ready();
+
   Telegram.WebApp.expand();
 }
 
+/* ЗАПУСК */
+
 showCover();
+
 </script>
 </body>
 </html>
