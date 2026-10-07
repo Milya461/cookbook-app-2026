@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+
 <title>Моя кулинарная книга</title>
 
 <style>
 *{
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent
+  -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
   margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#f4eee5
+  background:#f4eee5;
 }
 
 body{
-  font-family:Arial,sans-serif
+  font-family:Arial,sans-serif;
 }
 
 #app{
@@ -28,7 +30,7 @@ body{
   height:100%;
   display:flex;
   justify-content:center;
-  align-items:flex-start
+  align-items:flex-start;
 }
 
 .book{
@@ -37,7 +39,7 @@ body{
   height:min(100vh,852px);
   aspect-ratio:393/852;
   overflow:hidden;
-  background:#f4eee5
+  background:#f4eee5;
 }
 
 .page{
@@ -48,7 +50,7 @@ body{
   display:block;
   object-fit:fill;
   user-select:none;
-  -webkit-user-drag:none
+  -webkit-user-drag:none;
 }
 
 .hit{
@@ -58,11 +60,11 @@ body{
   padding:0;
   margin:0;
   z-index:5;
-  cursor:pointer
+  cursor:pointer;
 }
 
 .hit:active{
-  background:rgba(0,0,0,.04)
+  background:rgba(0,0,0,.04);
 }
 
 .input-hit{
@@ -73,11 +75,11 @@ body{
   background:transparent;
   color:#777;
   font:14px Arial;
-  padding:0 16px
+  padding:0 16px;
 }
 
 .input-hit::placeholder{
-  color:#999
+  color:#999;
 }
 </style>
 </head>
@@ -276,25 +278,61 @@ let selected=JSON.parse(
 let stack=[];
 let currentCategory=null;
 
-function shell(img,buttons="",extra=""){
 
-  document.getElementById("app").innerHTML=
-    '<main class="book">'+
-      '<img class="page" src="'+raw(img)+'" alt="">'+
-      buttons+
-      extra+
-    '</main>';
+/* СОЗДАНИЕ КНОПКИ */
 
+function button(x,y,w,h,action){
+
+  const el=document.createElement("button");
+
+  el.className="hit";
+
+  el.style.left=x+"px";
+  el.style.top=y+"px";
+  el.style.width=w+"px";
+  el.style.height=h+"px";
+
+  el.type="button";
+
+  el.addEventListener("click",action);
+
+  return el;
 }
 
-function b(x,y,w,h,fn){
 
-  return '<button class="hit" '+
-    'style="left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px" '+
-    'onclick="'+fn+'">'+
-    '</button>';
+/* СОЗДАНИЕ СТРАНИЦЫ */
 
+function shell(img,buttons=[],extra=null){
+
+  const book=document.createElement("main");
+
+  book.className="book";
+
+  const page=document.createElement("img");
+
+  page.className="page";
+  page.src=raw(img);
+  page.alt="";
+
+  page.draggable=false;
+
+  book.appendChild(page);
+
+  buttons.forEach(b=>{
+    book.appendChild(b);
+  });
+
+  if(extra){
+    book.appendChild(extra);
+  }
+
+  document
+    .getElementById("app")
+    .replaceChildren(book);
 }
+
+
+/* ОБЛОЖКА */
 
 function cover(){
 
@@ -302,46 +340,132 @@ function cover(){
 
   shell(
     P.cover,
-    b(95,772,205,58,"menu()")
+
+    [
+
+      /*
+       ВРЕМЕННО КНОПКА НА ВСЮ ОБЛОЖКУ.
+       В ЛЮБОЕ МЕСТО НА ОБЛОЖКЕ МОЖНО НАЖАТЬ.
+      */
+
+      button(
+        0,
+        0,
+        393,
+        852,
+        menu
+      )
+
+    ]
   );
 
 }
+
+
+/* ГЛАВНОЕ МЕНЮ */
 
 function menu(){
 
   shell(
     P.menu,
 
-    b(268,20,101,48,"showSelected()")+
+    [
 
-    b(18,222,355,84,"category(\'Салаты\')")+
+      button(
+        268,
+        20,
+        101,
+        48,
+        showSelected
+      ),
 
-    b(18,307,355,84,"category(\'Паста и макароны\')")+
+      button(
+        18,
+        222,
+        355,
+        84,
+        ()=>category("Салаты")
+      ),
 
-    b(18,392,355,84,"category(\'Курица\')")+
+      button(
+        18,
+        307,
+        355,
+        84,
+        ()=>category("Паста и макароны")
+      ),
 
-    b(18,477,355,84,"category(\'Мясо\')")+
+      button(
+        18,
+        392,
+        355,
+        84,
+        ()=>category("Курица")
+      ),
 
-    b(18,562,355,84,"category(\'Супы\')")+
+      button(
+        18,
+        477,
+        355,
+        84,
+        ()=>category("Мясо")
+      ),
 
-    b(18,647,355,84,"category(\'Быстро и сытно\')")+
+      button(
+        18,
+        562,
+        355,
+        84,
+        ()=>category("Супы")
+      ),
 
-    b(18,732,355,84,"category(\'Выпечка\')")
+      button(
+        18,
+        647,
+        355,
+        84,
+        ()=>category("Быстро и сытно")
+      ),
+
+      button(
+        18,
+        732,
+        355,
+        84,
+        ()=>category("Выпечка")
+      )
+
+    ]
   );
 
 }
+
+
+/* КАТЕГОРИЯ */
 
 function category(name){
 
   currentCategory=name;
 
-  const bs=
-    b(18,22,75,45,"menu()")+
-    b(264,18,108,48,"showSelected()");
+  const buttons=[
 
-  const list=C[name].slice(0,5);
+    button(
+      18,
+      22,
+      75,
+      45,
+      menu
+    ),
 
-  let hits="";
+    button(
+      264,
+      18,
+      108,
+      48,
+      showSelected
+    )
+
+  ];
 
   const ys=[
     185,
@@ -351,24 +475,31 @@ function category(name){
     725
   ];
 
-  list.forEach((r,i)=>{
+  C[name].forEach((recipeName,i)=>{
 
-    hits+=b(
-      20,
-      ys[i],
-      352,
-      130,
-      "recipe("+JSON.stringify(r)+")"
+    buttons.push(
+
+      button(
+        20,
+        ys[i],
+        352,
+        130,
+        ()=>recipe(recipeName)
+      )
+
     );
 
   });
 
   shell(
     P[name],
-    bs+hits
+    buttons
   );
 
 }
+
+
+/* РЕЦЕПТ */
 
 function recipe(name){
 
@@ -379,20 +510,39 @@ function recipe(name){
   shell(
     R[name],
 
-    b(18,22,75,45,"back()")+
+    [
 
-    b(264,18,108,48,"showSelected()")+
+      button(
+        18,
+        22,
+        75,
+        45,
+        back
+      ),
 
-    b(
-      20,
-      770,
-      353,
-      65,
-      "addRecipe("+JSON.stringify(name)+")"
-    )
+      button(
+        264,
+        18,
+        108,
+        48,
+        showSelected
+      ),
+
+      button(
+        20,
+        770,
+        353,
+        65,
+        ()=>addRecipe(name)
+      )
+
+    ]
   );
 
 }
+
+
+/* ДОБАВИТЬ РЕЦЕПТ */
 
 function addRecipe(name){
 
@@ -409,13 +559,16 @@ function addRecipe(name){
 
 }
 
+
+/* НАЗАД */
+
 function back(){
 
-  const p=stack.pop();
+  const previous=stack.pop();
 
-  if(p){
+  if(previous){
 
-    p();
+    previous();
 
   }else{
 
@@ -425,6 +578,9 @@ function back(){
 
 }
 
+
+/* МОЙ ВЫБОР */
+
 function showSelected(){
 
   if(selected.length===0){
@@ -432,28 +588,75 @@ function showSelected(){
     shell(
       P.empty,
 
-      b(18,20,75,45,"menu()")+
+      [
 
-      b(18,770,353,65,"menu()")
+        button(
+          18,
+          20,
+          75,
+          45,
+          menu
+        ),
+
+        button(
+          18,
+          770,
+          353,
+          65,
+          menu
+        )
+
+      ]
     );
 
-  }else{
-
-    shell(
-      P.selected,
-
-      b(18,20,75,45,"menu()")+
-
-      b(18,770,353,65,"sendPage()")+
-
-      b(315,245,45,65,"removeFirst()")+
-
-      b(315,325,45,65,"removeSecond()")
-    );
-
+    return;
   }
 
+
+  shell(
+    P.selected,
+
+    [
+
+      button(
+        18,
+        20,
+        75,
+        45,
+        menu
+      ),
+
+      button(
+        18,
+        770,
+        353,
+        65,
+        sendPage
+      ),
+
+      button(
+        315,
+        245,
+        45,
+        65,
+        removeFirst
+      ),
+
+      button(
+        315,
+        325,
+        45,
+        65,
+        removeSecond
+      )
+
+    ]
+  );
+
 }
+
+
+/* УДАЛИТЬ ПЕРВЫЙ */
 
 function removeFirst(){
 
@@ -467,6 +670,9 @@ function removeFirst(){
   showSelected();
 
 }
+
+
+/* УДАЛИТЬ ВТОРОЙ */
 
 function removeSecond(){
 
@@ -485,32 +691,64 @@ function removeSecond(){
 
 }
 
+
+/* СТРАНИЦА ОТПРАВКИ */
+
 function sendPage(){
 
-  const input=
-    '<input '+
-    'id="name" '+
-    'class="input-hit" '+
-    'style="left:24px;top:280px;width:345px;height:52px" '+
-    'placeholder="Например, Интеллигент" '+
-    'autocomplete="off">';
+  const input=document.createElement("input");
+
+  input.id="name";
+
+  input.className="input-hit";
+
+  input.style.left="24px";
+  input.style.top="280px";
+  input.style.width="345px";
+  input.style.height="52px";
+
+  input.placeholder="Например, Интеллигент";
+
+  input.autocomplete="off";
 
   shell(
     P.send,
 
-    b(18,20,75,45,"showSelected()")+
+    [
 
-    b(18,770,353,65,"sendChoice()"),
+      button(
+        18,
+        20,
+        75,
+        45,
+        showSelected
+      ),
+
+      button(
+        18,
+        770,
+        353,
+        65,
+        sendChoice
+      )
+
+    ],
 
     input
   );
 
 }
 
+
+/* ОТПРАВИТЬ */
+
 function sendChoice(){
 
-  const name=
-    (document.getElementById("name")?.value||"").trim();
+  const name=(
+    document
+      .getElementById("name")
+      ?.value||""
+  ).trim();
 
   const payload={
     name:name,
@@ -532,10 +770,23 @@ function sendChoice(){
   shell(
     P.done,
 
-    b(18,770,353,65,"menu()")
+    [
+
+      button(
+        18,
+        770,
+        353,
+        65,
+        menu
+      )
+
+    ]
   );
 
 }
+
+
+/* TELEGRAM */
 
 if(
   window.Telegram &&
@@ -547,6 +798,9 @@ if(
   Telegram.WebApp.expand();
 
 }
+
+
+/* ЗАПУСК */
 
 cover();
 
