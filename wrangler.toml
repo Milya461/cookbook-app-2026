@@ -1,0 +1,5 @@
+name = "cookbook-app-2026"
+compatibility_date = "2026-10-25"
+
+[assets]
+directory = "."
