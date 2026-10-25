@@ -200,6 +200,18 @@
       cursor: pointer;
     }
 
+
+    .add-form { display: grid; gap: 14px; }
+    .form-card { background: #fff; border-radius: 18px; padding: 18px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    .field { display: grid; gap: 7px; margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { font-size: 15px; font-weight: bold; }
+    .field input, .field textarea { width: 100%; border: 1px solid #e5dcd2; border-radius: 12px; padding: 12px; background: #fffdf9; color: #2d2926; }
+    .field textarea { min-height: 105px; resize: vertical; line-height: 1.5; }
+    .field small, .form-note { color: #777; font-size: 13px; line-height: 1.45; }
+    .form-actions { display: grid; gap: 10px; }
+    .recipe-photo-placeholder { width: 100%; height: 100%; min-height: 180px; display: grid; place-items: center; color: #8b5e4a; font-size: 48px; }
+
   </style>
 
 </head>
@@ -381,6 +393,30 @@ const recipeImages = {
 };
 
 
+
+const CUSTOM_RECIPES_KEY = "cookbookCustomRecipesV1";
+let userAddedRecipes = [];
+
+try {
+  const savedCustomRecipes = JSON.parse(localStorage.getItem(CUSTOM_RECIPES_KEY) || "[]");
+  userAddedRecipes = Array.isArray(savedCustomRecipes) ? savedCustomRecipes : [];
+} catch (error) {
+  userAddedRecipes = [];
+}
+
+userAddedRecipes.forEach(item => {
+  if (!item || !item.title || !item.category) return;
+  if (!recipes[item.category]) recipes[item.category] = [];
+  const alreadyExists = recipes[item.category].some(recipe => recipe[0] === item.title);
+  if (!alreadyExists) recipes[item.category].push([item.title, item.description || "Домашний рецепт"]);
+  if (item.image) recipeImages[item.title] = item.image;
+});
+
+function escapeHtml(value) {
+  const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return String(value == null ? "" : value).replace(/[&<>"']/g, character => entities[character]);
+}
+
 let selected = JSON.parse(
   localStorage.getItem("selectedRecipes") || "[]"
 );
@@ -473,12 +509,129 @@ function showMenu() {
 
         </button>
 
+        <button onclick="showAddRecipe()">＋ Добавить рецепт</button>
+
       </div>
 
     </section>
 
   `;
 
+}
+
+
+
+/* ДОБАВЛЕНИЕ СОБСТВЕННОГО РЕЦЕПТА */
+
+function showAddRecipe() {
+  history.push({ page: "menu" });
+  const categoryOptions = Object.keys(recipes)
+    .map(category => '<option value="' + escapeHtml(category) + '">' + escapeHtml(category) + '</option>')
+    .join("");
+
+  document.getElementById("app").innerHTML =
+    '<section class="screen">' +
+      '<div class="header"><h1>Новый рецепт</h1><button class="back" onclick="goBack()">Назад</button></div>' +
+      '<form class="add-form" onsubmit="saveCustomRecipe(event)">' +
+        '<div class="form-card">' +
+          '<div class="field"><label for="newRecipeTitle">Название рецепта *</label><input id="newRecipeTitle" maxlength="100" required placeholder="Например, паста с креветками"></div>' +
+          '<div class="field"><label for="newRecipeCategory">Категория *</label><input id="newRecipeCategory" list="recipeCategoryList" maxlength="60" required placeholder="Выбери или напиши новую"><datalist id="recipeCategoryList">' + categoryOptions + '</datalist><small>Можно выбрать существующую категорию или создать новую.</small></div>' +
+          '<div class="field"><label for="newRecipeDescription">Краткое описание</label><input id="newRecipeDescription" maxlength="240" placeholder="Что это за блюдо"></div>' +
+        '</div>' +
+        '<div class="form-card">' +
+          '<div class="field"><label for="newRecipeIngredients">Ингредиенты</label><textarea id="newRecipeIngredients" placeholder="Каждый ингредиент — с новой строки&#10;500 г курицы&#10;2 картофелины"></textarea><small>Количество и единицы измерения можно указать в каждой строке.</small></div>' +
+          '<div class="field"><label for="newRecipeSteps">Приготовление</label><textarea id="newRecipeSteps" placeholder="Каждый шаг — с новой строки&#10;Подготовить ингредиенты&#10;Обжарить и довести до готовности"></textarea></div>' +
+        '</div>' +
+        '<div class="form-card">' +
+          '<div class="field"><label for="newRecipeImageFile">Фотография блюда</label><input id="newRecipeImageFile" type="file" accept="image/*"><small>Фото с телефона будет уменьшено перед сохранением.</small></div>' +
+          '<div class="field"><label for="newRecipeImageUrl">Или ссылка на фото</label><input id="newRecipeImageUrl" type="url" placeholder="https://..."></div>' +
+        '</div>' +
+        '<p class="form-note">Пока новые рецепты хранятся в браузере этого устройства. Позже можно подключить Cloudflare D1, чтобы они синхронизировались между устройствами.</p>' +
+        '<div class="form-actions"><button class="button" type="submit">Сохранить рецепт</button><button class="button" type="button" onclick="goBack()">Отмена</button></div>' +
+      '</form>' +
+    '</section>';
+}
+
+function compressRecipeImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Не получилось прочитать изображение."));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error("Файл не удалось открыть как изображение."));
+      image.onload = () => {
+        const maxSide = 900;
+        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+        try {
+          resolve(canvas.toDataURL("image/jpeg", 0.72));
+        } catch (error) {
+          reject(error);
+        }
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveCustomRecipe(event) {
+  event.preventDefault();
+
+  const title = document.getElementById("newRecipeTitle").value.trim();
+  const category = document.getElementById("newRecipeCategory").value.trim();
+  const description = document.getElementById("newRecipeDescription").value.trim();
+  const ingredients = document.getElementById("newRecipeIngredients").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const steps = document.getElementById("newRecipeSteps").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const file = document.getElementById("newRecipeImageFile").files[0];
+  let image = document.getElementById("newRecipeImageUrl").value.trim();
+
+  if (!title || !category) {
+    alert("Заполни название и категорию рецепта.");
+    return;
+  }
+
+  if (Object.values(recipes).flat().some(recipe => recipe[0].toLowerCase() === title.toLowerCase())) {
+    alert("Рецепт с таким названием уже есть. Укажи другое название.");
+    return;
+  }
+
+  if (file) {
+    try {
+      image = await compressRecipeImage(file);
+    } catch (error) {
+      alert(error.message || "Не удалось обработать фотографию.");
+      return;
+    }
+  }
+
+  const recipe = {
+    title,
+    category,
+    description: description || "Мой домашний рецепт",
+    ingredients,
+    steps,
+    image
+  };
+
+  const updatedRecipes = userAddedRecipes.concat(recipe);
+
+  try {
+    localStorage.setItem(CUSTOM_RECIPES_KEY, JSON.stringify(updatedRecipes));
+  } catch (error) {
+    alert("Не удалось сохранить рецепт. Возможно, в памяти браузера закончилось место. Попробуй фото меньшего размера или добавь ссылку на фото.");
+    return;
+  }
+
+  userAddedRecipes = updatedRecipes;
+  if (!recipes[category]) recipes[category] = [];
+  recipes[category].push([recipe.title, recipe.description]);
+  if (image) recipeImages[recipe.title] = image;
+
+  showCategory(category);
 }
 
 
@@ -531,11 +684,11 @@ function showCategory(category) {
           >
 
             <h3>
-              ${recipe[0]}
+              ${escapeHtml(recipe[0])}
             </h3>
 
             <p>
-              ${recipe[1]}
+              ${escapeHtml(recipe[1])}
             </p>
 
           </button>
@@ -577,13 +730,34 @@ function showRecipe(category, index) {
     selected.includes(name);
 
 
-  const fileName =
-    recipeImages[name];
+  const fileName = recipeImages[name] || "";
+  const customRecipe = userAddedRecipes.find(item => item.title === name && item.category === category);
+  const imageUrl = !fileName
+    ? ""
+    : (/^(https?:|data:image\/)/i.test(fileName)
+      ? fileName
+      : "https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/" + encodeURIComponent(fileName));
 
-
-  const imageUrl =
-    "https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/" +
-    encodeURIComponent(fileName);
+  const ingredients = customRecipe
+    ? customRecipe.ingredients
+    : ["Основные продукты", "Овощи и зелень", "Специи по вкусу"];
+  const steps = customRecipe
+    ? customRecipe.steps
+    : [
+        "Подготовить необходимые ингредиенты.",
+        "Приготовить основные продукты.",
+        "Соединить ингредиенты.",
+        "Подать готовое блюдо."
+      ];
+  const photoHtml = imageUrl
+    ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(name) + '">'
+    : '<div class="recipe-photo-placeholder">🍲</div>';
+  const ingredientsHtml = ingredients && ingredients.length
+    ? '<ul>' + ingredients.map(item => '<li>' + escapeHtml(item) + '</li>').join("") + '</ul>'
+    : '<p class="form-note">Ингредиенты пока не добавлены.</p>';
+  const stepsHtml = steps && steps.length
+    ? '<ol>' + steps.map(item => '<li>' + escapeHtml(item) + '</li>').join("") + '</ol>'
+    : '<p class="form-note">Способ приготовления пока не добавлен.</p>';
 
 
   document.getElementById("app").innerHTML = `
@@ -605,66 +779,31 @@ function showRecipe(category, index) {
 
         <div class="recipe-photo">
 
-          <img
-            src="${imageUrl}"
-            alt="${name}"
-          >
+          ${photoHtml}
 
         </div>
 
         <div class="recipe-content">
 
           <h1>
-            ${name}
+            ${escapeHtml(name)}
           </h1>
 
           <p>
-            ${recipe[1]}
+            ${escapeHtml(recipe[1])}
           </p>
 
           <h2>
             Ингредиенты
           </h2>
 
-          <ul>
-
-            <li>
-              Основные продукты
-            </li>
-
-            <li>
-              Овощи и зелень
-            </li>
-
-            <li>
-              Специи по вкусу
-            </li>
-
-          </ul>
+          ${ingredientsHtml}
 
           <h2>
             Приготовление
           </h2>
 
-          <ol>
-
-            <li>
-              Подготовить необходимые ингредиенты.
-            </li>
-
-            <li>
-              Приготовить основные продукты.
-            </li>
-
-            <li>
-              Соединить ингредиенты.
-            </li>
-
-            <li>
-              Подать готовое блюдо.
-            </li>
-
-          </ol>
+          ${stepsHtml}
 
           <button
             class="button favorite"
