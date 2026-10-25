@@ -5,7 +5,8 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#21150f">
 
   <title>Моя кулинарная книга</title>
 
@@ -211,6 +212,203 @@
     .field small, .form-note { color: #777; font-size: 13px; line-height: 1.45; }
     .form-actions { display: grid; gap: 10px; }
     .recipe-photo-placeholder { width: 100%; height: 100%; min-height: 180px; display: grid; place-items: center; color: #8b5e4a; font-size: 48px; }
+
+
+    :root {
+      --bg: #21150f;
+      --paper: #f2e2ce;
+      --cream: #f7ead8;
+      --caramel: #bd8552;
+      --caramel-light: #e3b77c;
+      --coffee: #2a1a12;
+      --muted: #c6b3a1;
+      --line: rgba(236, 207, 172, .30);
+      --accent: #bb8250;
+      --soft: rgba(245, 224, 201, .12);
+      --danger: #e9b4a7;
+      --shadow: 0 20px 55px rgba(0, 0, 0, .22);
+      --radius: 20px;
+    }
+    html { background: #21150f; }
+    body {
+      position: relative; isolation: isolate; min-height: 100vh; overflow-x: hidden;
+      color: var(--cream); background: #21150f;
+      font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    body::before {
+      content: ""; position: fixed; z-index: -2; inset: -24px;
+      background-image: url("https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/%D0%B1%D0%BB%D0%B8%D0%BD%D1%8B.jpeg");
+      background-size: cover; background-position: center;
+      filter: blur(8px) brightness(.45) saturate(.72); transform: scale(1.04);
+    }
+    body::after {
+      content: ""; position: fixed; z-index: -1; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 0%, rgba(183,117,60,.18), transparent 48%),
+                  linear-gradient(135deg, rgba(22,13,9,.48), rgba(38,22,15,.74));
+    }
+    #app { min-height: 100vh; }
+    .screen {
+      width: min(100%, 760px); margin: 0 auto; min-height: 100vh;
+      padding: 24px clamp(16px,4vw,30px) 46px; color: var(--cream);
+      background: rgba(38,24,17,.53);
+      border-left: 1px solid rgba(242,215,180,.36); border-right: 1px solid rgba(242,215,180,.36);
+      box-shadow: 0 0 60px rgba(0,0,0,.10);
+      backdrop-filter: blur(11px); -webkit-backdrop-filter: blur(11px);
+    }
+    .cover {
+      position: relative; display: flex; flex-direction: column; justify-content: space-between;
+      align-items: stretch; min-height: 100svh; padding: clamp(18px,4vw,30px); text-align: center;
+      border: 0;
+      background: linear-gradient(180deg, rgba(24,13,8,.46) 0%, rgba(35,20,12,.30) 43%, rgba(22,12,8,.78) 100%),
+                  url("https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/%D0%B1%D0%BB%D0%B8%D0%BD%D1%8B.jpeg") center / cover;
+      box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    }
+    .cover::before {
+      content: ""; position: absolute; inset: 10px; border: 1px solid rgba(245,224,197,.66); pointer-events: none;
+    }
+    .cover-topline, .cover-bottomline {
+      z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      color: rgba(250,236,217,.88); font-family: Arial,sans-serif; font-size: 9px;
+      line-height: 1.4; letter-spacing: .16em; text-transform: uppercase;
+    }
+    .cover-topline { padding: 8px 4px 15px; border-bottom: 1px solid rgba(245,224,197,.42); }
+    .cover-bottomline { padding: 15px 4px 7px; border-top: 1px solid rgba(245,224,197,.42); }
+    .cover-center { z-index: 1; margin: auto 0; padding: 60px 6px 68px; }
+    .cover-kicker {
+      margin: 0 0 20px; color: var(--caramel-light); font-family: Arial,sans-serif;
+      font-size: 10px; letter-spacing: .25em; line-height: 1.6; text-transform: uppercase;
+    }
+    .cover h1 {
+      max-width: 620px; margin: 0 auto; color: #fff3e1;
+      font-size: clamp(40px,10vw,72px); font-weight: 400; line-height: .91;
+      letter-spacing: -.045em; text-shadow: 0 3px 30px rgba(0,0,0,.38);
+    }
+    .cover h1 em { color: #e8c59a; font-weight: 400; }
+    .cover p.cover-description {
+      max-width: 330px; margin: 24px auto 30px; color: rgba(255,241,224,.88);
+      font-size: 16px; line-height: 1.6;
+    }
+    .button {
+      min-height: 48px; padding: 14px 22px; color: #fff4e5;
+      background: linear-gradient(130deg,#bd8651,#88542f);
+      border: 1px solid rgba(244,209,165,.50); border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(0,0,0,.18);
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+    .button:hover { transform: translateY(-2px); filter: brightness(1.07); }
+    .button:active { transform: translateY(0); }
+    .button.secondary { color: #f9e9d6; background: rgba(255,242,222,.10); border: 1px solid var(--line); box-shadow: none; }
+    .button.accent { background: linear-gradient(130deg,#c58e58,#8e592f); }
+    .button.danger { background: rgba(125,45,37,.72); color: #fff0e9; }
+    .button.full { width: 100%; }
+    .cover .button {
+      min-width: 210px; padding: 16px 24px; color: #2b1a10;
+      background: linear-gradient(135deg,#e5bd89,#b77a46); border: 0;
+      font-family: Arial,sans-serif; font-size: 12px; letter-spacing: .07em; text-transform: uppercase;
+    }
+    .header {
+      align-items: center; gap: 14px; margin-bottom: 25px; padding-bottom: 18px;
+      border-bottom: 1px solid rgba(234,204,168,.28);
+    }
+    .header-main { flex: 1; min-width: 0; }
+    .header h1 {
+      margin: 0; color: #fff0dc; font-size: clamp(27px,7vw,38px);
+      font-weight: 400; line-height: 1.04; letter-spacing: -.025em;
+    }
+    .header p {
+      margin: 7px 0 0; color: #c9b49d; font-family: Arial,sans-serif;
+      font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+    }
+    .back {
+      padding: 10px 13px; color: #f5e1c8; background: rgba(28,16,10,.58);
+      border: 1px solid rgba(234,204,168,.34); border-radius: 999px;
+      font-family: Arial,sans-serif; font-size: 12px;
+    }
+    .icon-button { color: #f5e1c8; background: rgba(28,16,10,.58); border-color: rgba(234,204,168,.34); }
+    .menu { gap: 12px; }
+    .menu button {
+      color: #fff0dc; background: rgba(28,17,12,.72);
+      border: 1px solid rgba(231,197,157,.33); border-radius: 17px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.12);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .menu button.category-card {
+      display: grid; grid-template-columns: 108px minmax(0,1fr) 22px;
+      gap: 14px; align-items: center; min-height: 112px; padding: 10px; overflow: hidden;
+    }
+    .category-card-photo {
+      width: 108px; height: 100px; overflow: hidden;
+      background: rgba(231,197,157,.14); border-radius: 11px;
+    }
+    .category-card-photo img {
+      display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease;
+    }
+    .category-card:hover .category-card-photo img { transform: scale(1.05); }
+    .category-card-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .category-card-copy small {
+      color: #d5aa77; font-family: Arial,sans-serif; font-size: 8px;
+      letter-spacing: .17em; text-transform: uppercase;
+    }
+    .category-card-copy strong { color: #fff0dc; font-size: clamp(17px,4vw,22px); font-weight: 400; line-height: 1.1; }
+    .category-card-copy em { color: #c5af98; font-family: Arial,sans-serif; font-size: 10px; font-style: normal; }
+    .category-card-arrow { color: #d2a26f; font-size: 20px; align-self: start; padding-top: 4px; }
+    .menu button.utility-card { display: flex; justify-content: space-between; align-items: center; min-height: 64px; padding: 17px 19px; font-size: 16px; }
+    .recipe-list { gap: 13px; }
+    .recipe-card.editorial-recipe-card {
+      display: grid; grid-template-columns: 112px minmax(0,1fr); align-items: stretch; gap: 15px;
+      padding: 10px; min-height: 120px; color: #fff0dc; background: rgba(29,17,11,.77);
+      border: 1px solid rgba(232,201,165,.30); border-radius: 17px; box-shadow: 0 8px 24px rgba(0,0,0,.13);
+    }
+    .recipe-card-photo { width: 112px; height: 112px; overflow: hidden; border-radius: 10px; background: rgba(231,197,157,.12); }
+    .recipe-card-photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+    .editorial-recipe-card:hover .recipe-card-photo img { transform: scale(1.05); }
+    .recipe-card-copy { display: flex; min-width: 0; flex-direction: column; justify-content: center; align-items: flex-start; gap: 7px; padding: 5px 6px 5px 0; }
+    .recipe-card h3 { margin: 0; color: #fff0dc; font-size: 18px; font-weight: 400; line-height: 1.13; }
+    .recipe-card p { margin: 0; color: #c8b39d; font-family: Arial,sans-serif; font-size: 11px; line-height: 1.45; }
+    .recipe-card-category { color: #d9aa75; font-family: Arial,sans-serif; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; }
+    .recipe {
+      color: #382419; background: rgba(249,237,221,.97);
+      border: 1px solid rgba(255,247,235,.7); border-radius: 23px; box-shadow: var(--shadow);
+    }
+    .recipe-photo { height: auto; aspect-ratio: 16 / 10; background: #4b3322; }
+    .recipe-photo img { object-fit: cover; }
+    .recipe-photo-placeholder { color: #ad7746; background: linear-gradient(135deg,#e9d4ba,#c9a27a); }
+    .recipe-content { padding: clamp(20px,5vw,30px); }
+    .recipe-content h1 { margin: 0 0 10px; color: #3c2619; font-size: clamp(30px,8vw,42px); font-weight: 400; line-height: 1.02; }
+    .recipe-content > p { margin: 0; color: #80634d; font-family: Arial,sans-serif; font-size: 13px; line-height: 1.55; }
+    .recipe-content h2 { margin: 27px 0 12px; padding-bottom: 8px; color: #9a673b; border-bottom: 1px solid #dfc7ac; font-size: 18px; font-weight: 400; letter-spacing: .02em; }
+    .recipe-content ul, .recipe-content ol { color: #503827; font-family: Arial,sans-serif; font-size: 14px; line-height: 1.75; }
+    .recipe-content .button { font-family: Arial,sans-serif; font-size: 13px; }
+    .form-card { color: #3c281d; background: rgba(249,237,221,.97); border: 1px solid rgba(255,247,235,.55); box-shadow: var(--shadow); }
+    .field label { color: #523a29; }
+    .field input, .field textarea { color: #39251a; background: #fffaf3; border-color: #ddc4a8; }
+    .field input:focus, .field textarea:focus { border-color: #a97545; box-shadow: 0 0 0 3px rgba(169,117,69,.14); outline: none; }
+    .field small, .form-note { color: #806b58; }
+    .form-note { margin: 0; }
+    .selected-list { gap: 10px; }
+    .selected-item { color: #3c281d; background: rgba(249,237,221,.97); border: 1px solid rgba(255,247,235,.55); box-shadow: 0 8px 22px rgba(0,0,0,.12); }
+    .selected-item strong { color: #3c281d; }
+    .selected-item div { color: #8c7059 !important; font-family: Arial,sans-serif; }
+    .remove { color: #a34e4e; }
+    .empty { color: #f7ead8; background: rgba(28,17,12,.70); border: 1px dashed rgba(231,197,157,.42); border-radius: 20px; }
+    .empty h2 { font-weight: 400; }
+    .empty p { color: #c6b3a1; }
+    .footer-note { color: rgba(231,215,194,.66); font-family: Arial,sans-serif; font-size: 10px; }
+    @media (max-width: 460px) {
+      .screen:not(.cover) { padding: 19px 13px 35px; }
+      .menu button.category-card { grid-template-columns: 88px minmax(0,1fr) 16px; gap: 11px; min-height: 95px; padding: 8px; }
+      .category-card-photo { width: 88px; height: 86px; }
+      .category-card-copy strong { font-size: 17px; }
+      .recipe-card.editorial-recipe-card { grid-template-columns: 94px minmax(0,1fr); gap: 11px; min-height: 101px; padding: 8px; }
+      .recipe-card-photo { width: 94px; height: 94px; }
+      .recipe-card h3 { font-size: 16px; }
+      .recipe-card p { font-size: 10px; }
+      .cover-topline, .cover-bottomline { font-size: 7px; letter-spacing: .12em; }
+      .cover-center { padding: 42px 10px 50px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
 
   </style>
 
@@ -434,92 +632,60 @@ function saveSelected() {
 }
 
 
+
+function recipePhotoUrl(name) {
+  const image = recipeImages[name] || "";
+  if (!image) return "";
+  if (/^(https?:|data:image\/)/i.test(image)) return image;
+  return "https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/" + encodeURIComponent(image);
+}
+
 /* ОБЛОЖКА */
 
 function showCover() {
-
   history = [];
-
-  document.getElementById("app").innerHTML = `
-
-    <section class="screen cover">
-
-      <h1>
-        Моя<br>
-        кулинарная книга
-      </h1>
-
-      <p>
-        Любимые рецепты на каждый день
-      </p>
-
-      <button
-        class="button"
-        onclick="showMenu()"
-      >
-        Открыть меню
-      </button>
-
-    </section>
-
-  `;
-
+  document.getElementById("app").innerHTML =
+    '<section class="screen cover">' +
+      '<div class="cover-topline"><span>Домашняя кулинарная коллекция</span><span>№ 01 · С любовью</span></div>' +
+      '<div class="cover-center">' +
+        '<p class="cover-kicker">Рецепты, к которым возвращаются</p>' +
+        '<h1>Моя<br><em>кулинарная книга</em></h1>' +
+        '<p class="cover-description">Домашние блюда, семейные секреты и вкусные идеи на каждый день.</p>' +
+        '<button class="button" onclick="showMenu()">Открыть книгу&nbsp; ↗</button>' +
+      '</div>' +
+      '<div class="cover-bottomline"><span>Вкус дома</span><span>Собрано на вашей кухне</span></div>' +
+    '</section>';
 }
-
 
 /* ГЛАВНОЕ МЕНЮ */
 
 function showMenu() {
-
-  document.getElementById("app").innerHTML = `
-
-    <section class="screen">
-
-      <div class="header">
-
-        <h1>
-          Главное меню
-        </h1>
-
-        <button
-          class="back"
-          onclick="showCover()"
-        >
-          Назад
-        </button>
-
-      </div>
-
-      <div class="menu">
-
-        ${Object.keys(recipes).map(category => `
-
-          <button
-            onclick="openCategory('${escapeQuotes(category)}')"
-          >
-            ${category}
-          </button>
-
-        `).join("")}
-
-        <button onclick="openSelected()">
-
-          Мой выбор
-          ${selected.length ? `(${selected.length})` : ""}
-
-        </button>
-
-        <button onclick="showAddRecipe()">＋ Добавить рецепт</button>
-
-      </div>
-
-    </section>
-
-  `;
-
+  document.getElementById("app").innerHTML =
+    '<section class="screen">' +
+      '<div class="header">' +
+        '<div class="header-main"><p>Ваша коллекция</p><h1>Кулинарная книга</h1></div>' +
+        '<button class="icon-button" onclick="showAddRecipe()" aria-label="Добавить рецепт">＋</button>' +
+      '</div>' +
+      '<div class="menu">' +
+        '<div style="margin:0 0 3px;color:#d9aa75;font:10px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase">Выберите настроение и вкус</div>' +
+        Object.keys(recipes).map(function(category) {
+          const photo = recipePhotoUrl(recipes[category][0] && recipes[category][0][0]);
+          return '<button class="category-card" data-category="' + escapeHtml(category) + '" onclick="openCategory(this.dataset.category)">' +
+            '<span class="category-card-photo">' +
+              (photo ? '<img src="' + escapeHtml(photo) + '" alt="" loading="lazy">' : '🍲') +
+            '</span>' +
+            '<span class="category-card-copy"><small>Раздел рецептов</small><strong>' + escapeHtml(category) + '</strong><em>' +
+              recipes[category].length + ' ' + (recipes[category].length === 1 ? 'рецепт' : (recipes[category].length < 5 ? 'рецепта' : 'рецептов')) +
+            '</em></span><span class="category-card-arrow">↗</span>' +
+          '</button>';
+        }).join("") +
+        '<button class="utility-card" onclick="openSelected()"><span>♡ &nbsp; Мой выбор</span><span>' +
+          (selected.length ? '(' + selected.length + ')' : '↗') + '</span></button>' +
+        '<button class="utility-card" onclick="showAddRecipe()"><span>＋ &nbsp; Добавить новый рецепт</span><span>↗</span></button>' +
+      '</div>' +
+      '<div class="footer-note">Личные рецепты · домашние традиции · вкусные открытия</div>' +
+    '</section>';
 }
-
-
 
 /* ДОБАВЛЕНИЕ СОБСТВЕННОГО РЕЦЕПТА */
 
@@ -651,58 +817,31 @@ function openCategory(category) {
 /* КАТЕГОРИЯ */
 
 function showCategory(category) {
-
-  document.getElementById("app").innerHTML = `
-
-    <section class="screen">
-
-      <div class="header">
-
-        <h1>
-          ${category}
-        </h1>
-
-        <button
-          class="back"
-          onclick="goBack()"
-        >
-          Назад
-        </button>
-
-      </div>
-
-      <div class="recipe-list">
-
-        ${recipes[category].map((recipe, index) => `
-
-          <button
-            class="recipe-card"
-            onclick="openRecipe(
-              '${escapeQuotes(category)}',
-              ${index}
-            )"
-          >
-
-            <h3>
-              ${escapeHtml(recipe[0])}
-            </h3>
-
-            <p>
-              ${escapeHtml(recipe[1])}
-            </p>
-
-          </button>
-
-        `).join("")}
-
-      </div>
-
-    </section>
-
-  `;
-
+  const categoryRecipes = recipes[category] || [];
+  document.getElementById("app").innerHTML =
+    '<section class="screen">' +
+      '<div class="header">' +
+        '<button class="back" onclick="goBack()">← Назад</button>' +
+        '<div class="header-main"><p>Из кулинарной коллекции</p><h1>' + escapeHtml(category) + '</h1></div>' +
+        '<button class="icon-button" onclick="showAddRecipe()" aria-label="Добавить рецепт">＋</button>' +
+      '</div>' +
+      '<div class="recipe-list">' +
+        categoryRecipes.map(function(recipe, index) {
+          const photo = recipePhotoUrl(recipe[0]);
+          return '<button class="recipe-card editorial-recipe-card" data-category="' + escapeHtml(category) + '" data-index="' + index + '" onclick="openRecipe(this.dataset.category, Number(this.dataset.index))">' +
+            '<span class="recipe-card-photo">' +
+              (photo ? '<img src="' + escapeHtml(photo) + '" alt="" loading="lazy">' : '🍽️') +
+            '</span>' +
+            '<span class="recipe-card-copy">' +
+              '<span class="recipe-card-category">' + escapeHtml(category) + '</span>' +
+              '<h3>' + escapeHtml(recipe[0]) + '</h3>' +
+              '<p>' + escapeHtml(recipe[1]) + '</p>' +
+            '</span>' +
+          '</button>';
+        }).join("") +
+      '</div>' +
+    '</section>';
 }
-
 
 /* ОТКРЫТЬ РЕЦЕПТ */
 
