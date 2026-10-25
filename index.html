@@ -1595,7 +1595,9 @@ function updateSearchResults(value) {
   const results = [];
   Object.keys(recipes).forEach(function(category) {
     (recipes[category] || []).forEach(function(recipe, index) {
-      const haystack = (recipe[0] + " " + (recipe[1] || "") + " " + category).toLowerCase();
+      const custom = userAddedRecipes.find(item => item.title === recipe[0] && item.category === category);
+      const ingredientText = custom && Array.isArray(custom.ingredients) ? custom.ingredients.join(" ") : "";
+      const haystack = (recipe[0] + " " + (recipe[1] || "") + " " + category + " " + ingredientText).toLowerCase();
       if (!cookbookSearchTerm.trim() || haystack.includes(cookbookSearchTerm.trim().toLowerCase())) {
         results.push({ category: category, recipe: recipe, index: index });
       }
