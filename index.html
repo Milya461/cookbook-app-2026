@@ -850,6 +850,8 @@ async function saveCustomRecipe(event) {
   const description = document.getElementById("newRecipeDescription").value.trim();
   const ingredients = document.getElementById("newRecipeIngredients").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
   const steps = document.getElementById("newRecipeSteps").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const prepTime = document.getElementById("newRecipePrepTime").value.trim();
+  const servings = document.getElementById("newRecipeServings").value.trim();
   const file = document.getElementById("newRecipeImageFile").files[0];
   let image = document.getElementById("newRecipeImageUrl").value.trim();
 
@@ -857,12 +859,10 @@ async function saveCustomRecipe(event) {
     alert("Заполни название и категорию рецепта.");
     return;
   }
-
   if (Object.values(recipes).flat().some(recipe => recipe[0].toLowerCase() === title.toLowerCase())) {
     alert("Рецепт с таким названием уже есть. Укажи другое название.");
     return;
   }
-
   if (file) {
     try {
       image = await compressRecipeImage(file);
@@ -873,20 +873,21 @@ async function saveCustomRecipe(event) {
   }
 
   const recipe = {
-    title,
-    category,
+    title: title,
+    category: category,
     description: description || "Мой домашний рецепт",
-    ingredients,
-    steps,
-    image
+    prepTime: prepTime,
+    servings: servings,
+    ingredients: ingredients,
+    steps: steps,
+    image: image
   };
-
   const updatedRecipes = userAddedRecipes.concat(recipe);
 
   try {
     localStorage.setItem(CUSTOM_RECIPES_KEY, JSON.stringify(updatedRecipes));
   } catch (error) {
-    alert("Не удалось сохранить рецепт. Возможно, в памяти браузера закончилось место. Попробуй фото меньшего размера или добавь ссылку на фото.");
+    alert("Не удалось сохранить рецепт. Попробуй фото меньшего размера или добавь ссылку на фото.");
     return;
   }
 
@@ -895,6 +896,7 @@ async function saveCustomRecipe(event) {
   recipes[category].push([recipe.title, recipe.description]);
   if (image) recipeImages[recipe.title] = image;
 
+  cookbookCurrentCategory = category;
   showCategory(category);
 }
 
