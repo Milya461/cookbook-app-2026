@@ -1543,8 +1543,10 @@ function showCover() {
 let cookbookHistory = [];
 
 function navigateTab(tab) {
-  if (tab !== "add") cookbookHistory = [];
-  cookbookCurrentCategory = null;
+  if (tab !== "add") {
+    cookbookHistory = [];
+    cookbookCurrentCategory = null;
+  }
   if (tab === "book") return showMenu();
   if (tab === "search") return showSearch();
   if (tab === "favorites") return showFavorites();
