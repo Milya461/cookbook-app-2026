@@ -410,6 +410,104 @@
       *, *::before, *::after { transition-duration: .01ms !important; scroll-behavior: auto !important; }
     }
 
+
+    /* Мобильная навигация */
+    .screen.app-page { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+    .bottom-nav {
+      position: fixed; z-index: 50; left: 50%; bottom: 0; transform: translateX(-50%);
+      width: min(100%, 760px); display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+      padding: 9px 10px calc(9px + env(safe-area-inset-bottom));
+      background: rgba(27,16,10,.96); border-top: 1px solid rgba(235,202,163,.26);
+      box-shadow: 0 -12px 34px rgba(0,0,0,.24); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    }
+    .bottom-nav button {
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      min-height:48px; padding:4px 1px; border:0; border-radius:12px; color:#baa38d;
+      background:transparent; font:10px Arial,sans-serif;
+    }
+    .bottom-nav button .nav-icon { font-size:21px; line-height:1.15; }
+    .bottom-nav button.active { color:#f2c18a; background:rgba(196,137,79,.13); }
+    .hero-panel {
+      position:relative; min-height:180px; display:flex; flex-direction:column; justify-content:flex-end;
+      margin:0 0 22px; padding:22px 20px; overflow:hidden; border-radius:20px;
+      background:linear-gradient(90deg,rgba(22,12,7,.9),rgba(22,12,7,.28)),
+        url("https://raw.githubusercontent.com/Milya461/cookbook-app-2026/main/%D0%BE%D0%BB%D0%B8%D0%B2%D1%8C%D0%B5.jpeg") center/cover;
+      border:1px solid rgba(232,197,157,.3); box-shadow:0 12px 35px rgba(0,0,0,.17);
+    }
+    .hero-panel .eyebrow { color:#e1b37e; font:9px/1.4 Arial,sans-serif; letter-spacing:.22em; text-transform:uppercase; }
+    .hero-panel h2 { margin:8px 0 7px; max-width:360px; color:#fff1df; font-size:clamp(28px,7vw,38px); line-height:.98; font-weight:400; }
+    .hero-panel p { margin:0; max-width:310px; color:#e3d0bb; font:11px/1.5 Arial,sans-serif; }
+    .quick-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0 0 23px; }
+    .quick-action {
+      display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:54px; padding:13px 14px;
+      text-align:left; color:#f2e1cd; background:rgba(255,240,221,.07);
+      border:1px solid rgba(231,197,157,.25); border-radius:14px; font-size:13px;
+    }
+    .quick-action strong { color:#e5b37b; font-weight:400; font-size:17px; }
+    .section-heading { display:flex; align-items:end; justify-content:space-between; gap:10px; margin:24px 0 12px; }
+    .section-heading h2 { margin:0; color:#fff0dc; font-size:23px; font-weight:400; }
+    .section-heading span { color:#c5aa8d; font:10px Arial,sans-serif; }
+    .home-search, .search-input {
+      display:flex; align-items:center; gap:10px; width:100%; min-height:48px; padding:0 15px;
+      color:#f8e8d5; background:rgba(25,15,10,.72); border:1px solid rgba(232,201,165,.28);
+      border-radius:14px; font:13px Arial,sans-serif;
+    }
+    .home-search { margin:0 0 18px; }
+    .home-search span, .search-input span { color:#d3a06a; font-size:18px; }
+    .search-input input {
+      flex:1; min-width:0; border:0; outline:0; padding:14px 0; color:#fff0dc;
+      background:transparent; font:14px Arial,sans-serif; box-shadow:none;
+    }
+    .search-input input::placeholder { color:#b69c83; }
+    .search-clear { padding:3px 6px; border:0; color:#c7ae94; background:transparent; font-size:21px; }
+    .search-meta { margin:13px 0; color:#c5ad95; font:11px Arial,sans-serif; }
+    .recipe-grid { display:grid; gap:13px; }
+    .recipe-tile { position:relative; min-width:0; }
+    .recipe-card-open {
+      display:grid; grid-template-columns:112px minmax(0,1fr); align-items:stretch; gap:15px;
+      width:100%; min-height:120px; padding:10px 47px 10px 10px; text-align:left; color:#fff0dc;
+      background:rgba(29,17,11,.77); border:1px solid rgba(232,201,165,.30); border-radius:17px;
+      box-shadow:0 8px 24px rgba(0,0,0,.13);
+    }
+    .recipe-card-open .recipe-card-photo { width:112px; height:112px; }
+    .card-favorite {
+      position:absolute; right:11px; top:11px; z-index:2; width:34px; height:34px;
+      border:1px solid rgba(235,205,170,.32); border-radius:50%; color:#d8b38d;
+      background:rgba(25,15,10,.82); font-size:18px;
+    }
+    .card-favorite.is-favorite { color:#f1b9a5; }
+    .recipe-stats { display:flex; flex-wrap:wrap; gap:8px; margin:15px 0 20px; }
+    .recipe-stat { display:inline-flex; align-items:center; gap:6px; padding:8px 11px; color:#78553a; background:#f0dfca; border-radius:999px; font:11px Arial,sans-serif; }
+    .ingredient-list { display:grid; gap:8px; margin:0; padding:0; list-style:none; }
+    .ingredient-check {
+      display:flex; align-items:flex-start; gap:11px; padding:10px 12px;
+      color:#503827; background:rgba(255,255,255,.52); border:1px solid #ead7c1;
+      border-radius:11px; font:14px/1.45 Arial,sans-serif;
+    }
+    .ingredient-check input { flex:0 0 auto; width:18px; height:18px; margin:1px 0 0; accent-color:#a86e3e; }
+    .ingredient-check.checked span { color:#9b8978; text-decoration:line-through; }
+    .recipe-steps { padding-left:22px; color:#503827; font:14px/1.75 Arial,sans-serif; }
+    .recipe-steps li { padding:0 0 8px 4px; }
+    .recipe-note { padding:14px; color:#81674f; background:#f0dfca; border:1px solid #e1c6a6; border-radius:13px; font:12px/1.55 Arial,sans-serif; }
+    .recipe-actions { display:grid; gap:10px; margin-top:22px; }
+    .empty { padding:40px 20px; }
+    .empty .empty-symbol { margin-bottom:12px; color:#d5a16b; font-size:35px; }
+    .selected-item { align-items:center; }
+    .selected-item button { flex:0 0 auto; }
+    .form-actions { margin-top:5px; }
+    .screen-title-count { color:#c9b49d; font:11px Arial,sans-serif; }
+    .field input, .field textarea { font:14px/1.5 Arial,sans-serif; }
+    @media(max-width:460px) {
+      .screen.app-page { padding-bottom:calc(106px + env(safe-area-inset-bottom)); }
+      .hero-panel { min-height:164px; padding:18px; }
+      .recipe-card-open { grid-template-columns:94px minmax(0,1fr); gap:11px; min-height:101px; padding:8px 42px 8px 8px; }
+      .recipe-card-open .recipe-card-photo { width:94px; height:94px; }
+      .recipe-card h3 { font-size:16px; }
+      .recipe-card p { font-size:10px; }
+      .card-favorite { top:9px; right:9px; width:30px; height:30px; }
+      .quick-action { padding:11px; font-size:12px; }
+    }
+
   </style>
 
 </head>
@@ -1359,6 +1457,389 @@ if (
 
   Telegram.WebApp.expand();
 
+}
+
+
+
+/* НОВЫЙ ИНТЕРФЕЙС КУЛИНАРНОЙ КНИГИ */
+let cookbookCurrentView = "cover";
+let cookbookCurrentCategory = null;
+let cookbookCurrentRecipeIndex = 0;
+let cookbookSearchTerm = "";
+let cookbookFavorites = new Set();
+let cookbookCheckedIngredients = {};
+
+try {
+  cookbookFavorites = new Set(JSON.parse(localStorage.getItem("cookbookFavoritesV1") || "[]"));
+} catch (error) {
+  cookbookFavorites = new Set();
+}
+try {
+  cookbookCheckedIngredients = JSON.parse(localStorage.getItem("cookbookIngredientChecksV1") || "{}") || {};
+} catch (error) {
+  cookbookCheckedIngredients = {};
+}
+
+function saveCookbookFavorites() {
+  try { localStorage.setItem("cookbookFavoritesV1", JSON.stringify([...cookbookFavorites])); } catch (error) {}
+}
+function saveCookbookCheckedIngredients() {
+  try { localStorage.setItem("cookbookIngredientChecksV1", JSON.stringify(cookbookCheckedIngredients)); } catch (error) {}
+}
+function cookbookCountLabel(count) {
+  const hundred = count % 100;
+  const last = count % 10;
+  if (hundred >= 11 && hundred <= 14) return count + " рецептов";
+  if (last === 1) return count + " рецепт";
+  if (last >= 2 && last <= 4) return count + " рецепта";
+  return count + " рецептов";
+}
+function cookbookPhoto(name) {
+  return recipePhotoUrl(name);
+}
+function cookbookBottomNav(active) {
+  const items = [
+    { id: "book", icon: "⌂", label: "Книга", action: 'navigateTab("book")' },
+    { id: "search", icon: "⌕", label: "Поиск", action: 'navigateTab("search")' },
+    { id: "favorites", icon: "♡", label: "Избранное", action: 'navigateTab("favorites")' },
+    { id: "add", icon: "＋", label: "Добавить", action: "showAddRecipe()" }
+  ];
+  return '<nav class="bottom-nav" aria-label="Главная навигация">' +
+    items.map(function(item) {
+      return '<button type="button" class="' + (active === item.id ? "active" : "") + '" onclick="' + item.action + '">' +
+        '<span class="nav-icon">' + item.icon + '</span><span>' + item.label + '</span></button>';
+    }).join("") + '</nav>';
+}
+function cookbookWrap(content, active) {
+  return '<section class="screen app-page">' + content + cookbookBottomNav(active) + '</section>';
+}
+function cookbookCard(category, recipe, index) {
+  const name = recipe[0];
+  const photo = cookbookPhoto(name);
+  const favorite = cookbookFavorites.has(name);
+  return '<div class="recipe-tile">' +
+    '<button class="recipe-card-open" data-category="' + escapeHtml(category) + '" data-index="' + index + '" onclick="openRecipe(this.dataset.category, Number(this.dataset.index))">' +
+      '<span class="recipe-card-photo">' + (photo ? '<img src="' + escapeHtml(photo) + '" alt="" loading="lazy">' : '<span class="recipe-photo-placeholder">🍽️</span>') + '</span>' +
+      '<span class="recipe-card-copy"><span class="recipe-card-category">' + escapeHtml(category) + '</span><h3>' + escapeHtml(name) + '</h3><p>' + escapeHtml(recipe[1] || "Домашний рецепт") + '</p></span>' +
+    '</button>' +
+    '<button class="card-favorite ' + (favorite ? "is-favorite" : "") + '" data-name="' + escapeHtml(name) + '" onclick="event.stopPropagation(); toggleFavorite(this.dataset.name)" aria-label="' + (favorite ? "Убрать из избранного" : "Добавить в избранное") + '">' + (favorite ? "♥" : "♡") + '</button>' +
+    '</div>';
+}
+
+function showCover() {
+  cookbookCurrentView = "cover";
+  cookbookHistory = [];
+  document.getElementById("app").innerHTML =
+    '<section class="screen cover">' +
+      '<div class="cover-topline"><span>Домашняя кулинарная коллекция</span><span>№ 01 · С любовью</span></div>' +
+      '<div class="cover-center"><p class="cover-kicker">Рецепты, к которым возвращаются</p>' +
+      '<h1>Моя<br><em>кулинарная книга</em></h1>' +
+      '<p class="cover-description">Домашние блюда, семейные рецепты и вкусные идеи на каждый день.</p>' +
+      '<button class="button" onclick="showMenu()">Открыть книгу&nbsp; ↗</button></div>' +
+      '<div class="cover-bottomline"><span>Вкус дома</span><span>Собрано на вашей кухне</span></div>' +
+    '</section>';
+}
+
+let cookbookHistory = [];
+
+function navigateTab(tab) {
+  if (tab !== "add") cookbookHistory = [];
+  cookbookCurrentCategory = null;
+  if (tab === "book") return showMenu();
+  if (tab === "search") return showSearch();
+  if (tab === "favorites") return showFavorites();
+  if (tab === "add") return showAddRecipe();
+}
+
+function showMenu() {
+  cookbookCurrentView = "book";
+  cookbookCurrentCategory = null;
+  const total = Object.values(recipes).reduce((sum, items) => sum + items.length, 0);
+  const categories = Object.keys(recipes).map(function(category) {
+    const first = recipes[category][0];
+    const photo = first ? cookbookPhoto(first[0]) : "";
+    return '<button class="category-card" data-category="' + escapeHtml(category) + '" onclick="openCategory(this.dataset.category)">' +
+      '<span class="category-card-photo">' + (photo ? '<img src="' + escapeHtml(photo) + '" alt="" loading="lazy">' : '🍲') + '</span>' +
+      '<span class="category-card-copy"><small>Раздел рецептов</small><strong>' + escapeHtml(category) + '</strong><em>' +
+      cookbookCountLabel(recipes[category].length) + '</em></span><span class="category-card-arrow">↗</span></button>';
+  }).join("");
+
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><div class="header-main"><p>Домашняя коллекция</p><h1>Кулинарная книга</h1><div class="screen-title-count" style="margin-top:8px">' + cookbookCountLabel(total) + '</div></div><button class="icon-button" onclick="showAddRecipe()" aria-label="Добавить рецепт">＋</button></div>' +
+    '<div class="hero-panel"><div class="eyebrow">Собрано на вашей кухне</div><h2>Вкус дома<br>в каждой странице</h2><p>Любимые блюда, семейные рецепты и новые идеи на каждый день.</p></div>' +
+    '<button class="home-search" style="text-align:left" onclick="navigateTab(&quot;search&quot;)"><span>⌕</span><span style="color:#c7ae94">Найти рецепт или ингредиент…</span><span style="margin-left:auto">↗</span></button>' +
+    '<div class="quick-actions"><button class="quick-action" onclick="openSelected()"><span>♡ &nbsp; Мой выбор</span><strong>' + selected.length + '</strong></button><button class="quick-action" onclick="showFavorites()"><span>♥ &nbsp; Избранное</span><strong>' + cookbookFavorites.size + '</strong></button></div>' +
+    '<div class="section-heading"><h2>Категории</h2><span>ВЫБЕРИ СВОЁ</span></div><div class="menu">' + categories + '</div>' +
+    '<div class="footer-note" style="margin-top:24px">Личные рецепты · домашние традиции · вкусные открытия</div>',
+    "book"
+  );
+}
+
+function showSearch() {
+  cookbookCurrentView = "search";
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><div class="header-main"><p>Вся книга</p><h1>Поиск</h1><div class="screen-title-count" style="margin-top:7px">Название, категория или описание</div></div></div>' +
+    '<label class="search-input"><span>⌕</span><input id="recipeSearchInput" type="search" placeholder="Например, курица или рис" value="' + escapeHtml(cookbookSearchTerm) + '" oninput="updateSearchResults(this.value)"><button type="button" class="search-clear" onclick="clearSearch()">×</button></label><div id="searchResults"></div>',
+    "search"
+  );
+  updateSearchResults(cookbookSearchTerm);
+}
+function updateSearchResults(value) {
+  cookbookSearchTerm = value || "";
+  const root = document.getElementById("searchResults");
+  if (!root) return;
+  const results = [];
+  Object.keys(recipes).forEach(function(category) {
+    (recipes[category] || []).forEach(function(recipe, index) {
+      const haystack = (recipe[0] + " " + (recipe[1] || "") + " " + category).toLowerCase();
+      if (!cookbookSearchTerm.trim() || haystack.includes(cookbookSearchTerm.trim().toLowerCase())) {
+        results.push({ category: category, recipe: recipe, index: index });
+      }
+    });
+  });
+  root.innerHTML = '<div class="search-meta">' + (cookbookSearchTerm.trim() ? "Найдено: " + results.length : "Все рецепты · " + cookbookCountLabel(results.length)) + '</div>' +
+    (results.length
+      ? '<div class="recipe-grid">' + results.map(item => cookbookCard(item.category, item.recipe, item.index)).join("") + '</div>'
+      : '<div class="empty"><div class="empty-symbol">⌕</div><h2>Ничего не найдено</h2><p>Попробуй изменить запрос или добавь свой рецепт.</p><button class="button" onclick="showAddRecipe()">Добавить рецепт</button></div>');
+}
+function clearSearch() {
+  cookbookSearchTerm = "";
+  const input = document.getElementById("recipeSearchInput");
+  if (input) {
+    input.value = "";
+    updateSearchResults("");
+    input.focus();
+  }
+}
+
+function showFavorites() {
+  cookbookCurrentView = "favorites";
+  const favoritesList = [];
+  Object.keys(recipes).forEach(function(category) {
+    (recipes[category] || []).forEach(function(recipe, index) {
+      if (cookbookFavorites.has(recipe[0])) favoritesList.push({ category: category, recipe: recipe, index: index });
+    });
+  });
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><div class="header-main"><p>Сохранённые блюда</p><h1>Избранное</h1><div class="screen-title-count" style="margin-top:7px">' + cookbookCountLabel(favoritesList.length) + '</div></div></div>' +
+    (favoritesList.length
+      ? '<div class="recipe-grid">' + favoritesList.map(item => cookbookCard(item.category, item.recipe, item.index)).join("") + '</div>'
+      : '<div class="empty"><div class="empty-symbol">♡</div><h2>Пока пусто</h2><p>Нажимай на сердечко у блюда, чтобы быстро найти его здесь.</p><button class="button" onclick="navigateTab(&quot;book&quot;)">Открыть книгу</button></div>'),
+    "favorites"
+  );
+}
+function toggleFavorite(name) {
+  if (cookbookFavorites.has(name)) cookbookFavorites.delete(name);
+  else cookbookFavorites.add(name);
+  try { saveCookbookFavorites(); } catch (error) {}
+  if (cookbookCurrentView === "favorites") showFavorites();
+  else if (cookbookCurrentView === "category") showCategory(cookbookCurrentCategory);
+  else if (cookbookCurrentView === "recipe") showRecipe(cookbookCurrentCategory, cookbookCurrentRecipeIndex);
+  else if (cookbookCurrentView === "search") showSearch();
+  else showMenu();
+}
+
+function showAddRecipe() {
+  cookbookHistory.push({ view: cookbookCurrentView, category: cookbookCurrentCategory, index: cookbookCurrentRecipeIndex, searchTerm: cookbookSearchTerm });
+  cookbookCurrentView = "add";
+  const categoryOptions = Object.keys(recipes).map(category => '<option value="' + escapeHtml(category) + '">' + escapeHtml(category) + '</option>').join("");
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><button class="back" onclick="goBack()">← Назад</button><div class="header-main"><p>Личная коллекция</p><h1>Новый рецепт</h1></div></div>' +
+    '<form class="add-form" onsubmit="saveCustomRecipe(event)">' +
+      '<div class="form-card"><div class="field"><label for="newRecipeTitle">Название рецепта *</label><input id="newRecipeTitle" maxlength="100" required placeholder="Например, паста с креветками"></div>' +
+      '<div class="field"><label for="newRecipeCategory">Категория *</label><input id="newRecipeCategory" list="recipeCategoryList" maxlength="60" required placeholder="Существующая или новая категория"><datalist id="recipeCategoryList">' + categoryOptions + '</datalist><small>Можно выбрать существующую категорию или написать новую.</small></div>' +
+      '<div class="field"><label for="newRecipeDescription">Короткое описание</label><input id="newRecipeDescription" maxlength="240" placeholder="Что это за блюдо"></div>' +
+      '<div class="field"><label for="newRecipePrepTime">Время приготовления</label><input id="newRecipePrepTime" maxlength="40" placeholder="Например, 35 минут"></div>' +
+      '<div class="field"><label for="newRecipeServings">Количество порций</label><input id="newRecipeServings" maxlength="20" placeholder="Например, 4"></div></div>' +
+      '<div class="form-card"><div class="field"><label for="newRecipeIngredients">Ингредиенты</label><textarea id="newRecipeIngredients" placeholder="Каждый ингредиент — с новой строки&#10;500 г курицы&#10;2 картофелины"></textarea><small>Количество и единицы измерения можно указать в каждой строке.</small></div>' +
+      '<div class="field"><label for="newRecipeSteps">Приготовление</label><textarea id="newRecipeSteps" placeholder="Каждый шаг — с новой строки&#10;Подготовить ингредиенты&#10;Приготовить до готовности"></textarea></div></div>' +
+      '<div class="form-card"><div class="field"><label for="newRecipeImageFile">Фотография блюда</label><input id="newRecipeImageFile" type="file" accept="image/*"><small>Фото будет уменьшено перед сохранением.</small></div><div class="field"><label for="newRecipeImageUrl">Или ссылка на фото</label><input id="newRecipeImageUrl" type="url" placeholder="https://..."></div></div>' +
+      '<p class="form-note">Новые рецепты пока сохраняются в браузере этого устройства.</p><div class="form-actions"><button class="button full" type="submit">Сохранить рецепт</button><button class="button secondary full" type="button" onclick="goBack()">Отмена</button></div>' +
+    '</form>',
+    "add"
+  );
+}
+
+async function saveCustomRecipe(event) {
+  event.preventDefault();
+  const title = document.getElementById("newRecipeTitle").value.trim();
+  const category = document.getElementById("newRecipeCategory").value.trim();
+  const description = document.getElementById("newRecipeDescription").value.trim();
+  const ingredients = document.getElementById("newRecipeIngredients").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const steps = document.getElementById("newRecipeSteps").value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const prepTime = document.getElementById("newRecipePrepTime").value.trim();
+  const servings = document.getElementById("newRecipeServings").value.trim();
+  const file = document.getElementById("newRecipeImageFile").files[0];
+  let image = document.getElementById("newRecipeImageUrl").value.trim();
+
+  if (!title || !category) {
+    alert("Заполни название и категорию рецепта.");
+    return;
+  }
+  if (Object.values(recipes).flat().some(recipe => recipe[0].toLowerCase() === title.toLowerCase())) {
+    alert("Рецепт с таким названием уже есть. Укажи другое название.");
+    return;
+  }
+  if (file) {
+    try { image = await compressRecipeImage(file); }
+    catch (error) {
+      alert(error.message || "Не удалось обработать фотографию.");
+      return;
+    }
+  }
+
+  const recipe = {
+    title: title,
+    category: category,
+    description: description || "Мой домашний рецепт",
+    prepTime: prepTime,
+    servings: servings,
+    ingredients: ingredients,
+    steps: steps,
+    image: image
+  };
+  const updated = userAddedRecipes.concat(recipe);
+  try {
+    localStorage.setItem(CUSTOM_RECIPES_KEY, JSON.stringify(updated));
+  } catch (error) {
+    alert("Не удалось сохранить рецепт. Попробуй фото меньшего размера или добавь ссылку на фото.");
+    return;
+  }
+
+  userAddedRecipes = updated;
+  if (!recipes[category]) recipes[category] = [];
+  recipes[category].push([recipe.title, recipe.description]);
+  if (image) recipeImages[recipe.title] = image;
+  showCategory(category);
+}
+
+function openCategory(category) {
+  cookbookHistory.push({ view: cookbookCurrentView, category: cookbookCurrentCategory, index: cookbookCurrentRecipeIndex, searchTerm: cookbookSearchTerm });
+  cookbookCurrentCategory = category;
+  showCategory(category);
+}
+function showCategory(category) {
+  cookbookCurrentView = "category";
+  cookbookCurrentCategory = category;
+  const list = recipes[category] || [];
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><button class="back" onclick="goBack()">← Назад</button><div class="header-main"><p>Ваша коллекция</p><h1>' + escapeHtml(category) + '</h1><div class="screen-title-count" style="margin-top:7px">' + cookbookCountLabel(list.length) + '</div></div><button class="icon-button" onclick="showAddRecipe()" aria-label="Добавить рецепт">＋</button></div>' +
+    '<div class="recipe-grid">' + list.map(function(recipe, index) { return cookbookCard(category, recipe, index); }).join("") + '</div>',
+    "book"
+  );
+}
+function openRecipe(category, index) {
+  cookbookHistory.push({ view: cookbookCurrentView, category: cookbookCurrentCategory, index: cookbookCurrentRecipeIndex, searchTerm: cookbookSearchTerm });
+  cookbookCurrentCategory = category;
+  cookbookCurrentRecipeIndex = index;
+  showRecipe(category, index);
+}
+function ingredientItemsHtml(name, ingredients) {
+  const checked = cookbookCheckedIngredients[name] || [];
+  return ingredients.map(function(item, index) {
+    const marked = checked.includes(index);
+    return '<li><label class="ingredient-check ' + (marked ? "checked" : "") + '">' +
+      '<input type="checkbox" data-recipe="' + escapeHtml(name) + '" data-index="' + index + '" ' + (marked ? "checked" : "") +
+      ' onchange="toggleIngredientCheck(this.dataset.recipe, Number(this.dataset.index), this.checked)"><span>' + escapeHtml(item) + '</span></label></li>';
+  }).join("");
+}
+function showRecipe(category, index) {
+  cookbookCurrentView = "recipe";
+  cookbookCurrentCategory = category;
+  cookbookCurrentRecipeIndex = index;
+  const recipe = (recipes[category] || [])[index];
+  if (!recipe) return showMenu();
+  const name = recipe[0];
+  const custom = userAddedRecipes.find(item => item.title === name && item.category === category);
+  const photo = cookbookPhoto(name);
+  const checkedSelected = selected.includes(name);
+  const favorite = cookbookFavorites.has(name);
+  const ingredients = custom && Array.isArray(custom.ingredients) ? custom.ingredients : [];
+  const steps = custom && Array.isArray(custom.steps) ? custom.steps : [];
+  const photoHtml = photo ? '<img src="' + escapeHtml(photo) + '" alt="' + escapeHtml(name) + '">' : '<div class="recipe-photo-placeholder">🍲</div>';
+  const ingredientsHtml = ingredients.length
+    ? '<ul class="ingredient-list" id="ingredientList">' + ingredientItemsHtml(name, ingredients) + '</ul>'
+    : '<div class="recipe-note">Подробный список ингредиентов для этой записи пока не заполнен. В личном рецепте можно указать продукты и их количество — тогда их получится отмечать галочками во время готовки.</div>';
+  const stepsHtml = steps.length
+    ? '<ol class="recipe-steps">' + steps.map(item => '<li>' + escapeHtml(item) + '</li>').join("") + '</ol>'
+    : '<div class="recipe-note">Подробные шаги приготовления для этой записи пока не добавлены.</div>';
+  const stats = [
+    custom && custom.prepTime ? '<span class="recipe-stat">◷ ' + escapeHtml(custom.prepTime) + '</span>' : '',
+    custom && custom.servings ? '<span class="recipe-stat">♧ ' + escapeHtml(custom.servings) + ' порц.</span>' : '',
+    '<span class="recipe-stat">♧ ' + escapeHtml(category) + '</span>'
+  ].filter(Boolean).join("");
+
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><button class="back" onclick="goBack()">← Назад</button><div class="header-main"><p>' + escapeHtml(category) + '</p></div><button class="icon-button" data-name="' + escapeHtml(name) + '" onclick="toggleFavorite(this.dataset.name)" aria-label="Избранное">' + (favorite ? "♥" : "♡") + '</button></div>' +
+    '<article class="recipe"><div class="recipe-photo">' + photoHtml + '</div><div class="recipe-content"><h1>' + escapeHtml(name) + '</h1><p>' + escapeHtml(recipe[1] || "Домашний рецепт") + '</p>' +
+      (stats ? '<div class="recipe-stats">' + stats + '</div>' : '') +
+      '<section class="recipe-section"><h2>Ингредиенты</h2>' + ingredientsHtml + '</section>' +
+      '<section class="recipe-section"><h2>Приготовление</h2>' + stepsHtml + '</section>' +
+      '<div class="recipe-actions"><button class="button full" data-name="' + escapeHtml(name) + '" onclick="toggleSelected(this.dataset.name)">' + (checkedSelected ? "✓ Убрать из моего выбора" : "＋ Добавить в мой выбор") + '</button>' +
+      '<button class="button secondary full" data-name="' + escapeHtml(name) + '" onclick="toggleFavorite(this.dataset.name)">' + (favorite ? "♥ В избранном" : "♡ Добавить в избранное") + '</button></div>' +
+    '</div></article>',
+    "book"
+  );
+}
+function toggleIngredientCheck(name, index, isChecked) {
+  if (!Array.isArray(cookbookCheckedIngredients[name])) cookbookCheckedIngredients[name] = [];
+  cookbookCheckedIngredients[name] = isChecked
+    ? [...new Set(cookbookCheckedIngredients[name].concat(index))]
+    : cookbookCheckedIngredients[name].filter(item => item !== index);
+  saveCookbookCheckedIngredients();
+  const root = document.getElementById("ingredientList");
+  const custom = userAddedRecipes.find(item => item.title === name && item.category === cookbookCurrentCategory);
+  if (root && custom && Array.isArray(custom.ingredients)) root.innerHTML = ingredientItemsHtml(name, custom.ingredients);
+}
+
+function toggleSelected(name) {
+  if (selected.includes(name)) selected = selected.filter(item => item !== name);
+  else selected.push(name);
+  saveSelected();
+  if (cookbookCurrentView === "recipe") showRecipe(cookbookCurrentCategory, cookbookCurrentRecipeIndex);
+  else showSelected();
+}
+function openSelected() {
+  cookbookHistory.push({ view: cookbookCurrentView, category: cookbookCurrentCategory, index: cookbookCurrentRecipeIndex, searchTerm: cookbookSearchTerm });
+  showSelected();
+}
+function showSelected() {
+  cookbookCurrentView = "selected";
+  const chosen = [];
+  Object.keys(recipes).forEach(function(category) {
+    (recipes[category] || []).forEach(function(recipe, index) {
+      if (selected.includes(recipe[0])) chosen.push({ category: category, recipe: recipe, index: index });
+    });
+  });
+  const items = chosen.map(function(item) {
+    return '<div class="selected-item"><div><strong>' + escapeHtml(item.recipe[0]) + '</strong><div style="font-size:11px;margin-top:5px">' + escapeHtml(item.category) + '</div></div>' +
+      '<div style="display:flex;gap:8px;align-items:center"><button class="small-button" data-category="' + escapeHtml(item.category) + '" data-index="' + item.index + '" onclick="openRecipe(this.dataset.category, Number(this.dataset.index))">Открыть</button><button class="remove" data-name="' + escapeHtml(item.recipe[0]) + '" onclick="removeSelected(this.dataset.name)">Убрать</button></div></div>';
+  }).join("");
+  document.getElementById("app").innerHTML = cookbookWrap(
+    '<div class="header"><div class="header-main"><p>Блюда, которые хочется приготовить</p><h1>Мой выбор</h1><div class="screen-title-count" style="margin-top:7px">' + cookbookCountLabel(chosen.length) + '</div></div></div>' +
+    (chosen.length
+      ? '<div class="selected-list">' + items + '</div><button class="button full" onclick="sendSelection()">Отправить мой выбор в Telegram&nbsp; ↗</button><p class="form-note" style="margin-top:12px">Отправим список выбранных блюд в твой бот.</p>'
+      : '<div class="empty"><div class="empty-symbol">🍽️</div><h2>Пока ничего не выбрано</h2><p>Открывай рецепты и добавляй блюда кнопкой «В мой выбор».</p><button class="button" onclick="navigateTab(&quot;book&quot;)">Выбрать блюда</button></div>'),
+    "book"
+  );
+}
+function removeSelected(name) {
+  selected = selected.filter(item => item !== name);
+  saveSelected();
+  showSelected();
+}
+function goBack() {
+  const previous = cookbookHistory.pop();
+  if (!previous) return showMenu();
+  cookbookSearchTerm = previous.searchTerm || cookbookSearchTerm;
+  cookbookCurrentCategory = previous.category || null;
+  if (previous.view === "book" || previous.view === "menu") return showMenu();
+  if (previous.view === "search") return showSearch();
+  if (previous.view === "favorites") return showFavorites();
+  if (previous.view === "selected") return showSelected();
+  if (previous.view === "category") return showCategory(previous.category || cookbookCurrentCategory);
+  if (previous.view === "recipe") return showRecipe(previous.category || cookbookCurrentCategory, previous.index || 0);
+  return showMenu();
 }
 
 
